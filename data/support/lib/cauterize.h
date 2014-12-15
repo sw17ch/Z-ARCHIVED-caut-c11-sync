@@ -24,6 +24,9 @@ enum caut_ord {
 /* Array type for a SHA1 hash. */
 typedef uint8_t hashtype_t[20];
 
+/* An alias for bool. Must be 1 byte. */
+typedef bool caut_bool;
+
 /* Returns the status if it's not `caut_status_ok`. */
 #define STATUS_CHECK(S) \
   do { \
