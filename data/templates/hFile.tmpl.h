@@ -29,14 +29,32 @@ extern hashtype_t const TYPE_HASH_{{cLibName}}_{{ctName}};
 {{! Emit type forward declarations (if any). }}
 {{#cLibTypes}}
 {{#ctDetails}}
-{{#CBuiltIn}}typedef {{ctdStdType}} {{ctName}};{{/CBuiltIn}}
-{{#CConst}}typedef {{ctdReprName}} {{ctName}};{{/CConst}}
-{{#CArray}}struct {{ctName}};{{/CArray}}
-{{#CVector}}struct {{ctName}};{{/CVector}}
-{{#CScalar}}typedef {{ctdReprName}} {{ctName}};{{/CScalar}}
-{{#CStruct}}struct {{ctName}};{{/CStruct}}
-{{#CEnum}}struct {{ctName}};{{/CEnum}}
-{{#CSet}}struct {{ctName}};{{/CSet}}
-{{#CPad}}struct {{ctName}};{{/CPad}}
+{{#CBuiltIn}}
+typedef {{ctdStdType}} {{ctName}};
+{{/CBuiltIn}}
+{{#CConst}}
+typedef {{ctdReprName}} {{ctName}};
+{{/CConst}}
+{{#CArray}}
+struct {{ctName}};
+{{/CArray}}
+{{#CVector}}
+struct {{ctName}};
+{{/CVector}}
+{{#CScalar}}
+typedef {{ctdReprName}} {{ctName}};
+{{/CScalar}}
+{{#CStruct}}
+struct {{ctName}};
+{{/CStruct}}
+{{#CEnum}}
+struct {{ctName}};
+{{/CEnum}}
+{{#CSet}}
+struct {{ctName}};
+{{/CSet}}
+{{#CPad}}
+struct {{ctName}};
+{{/CPad}}
 {{/ctDetails}}
 {{/cLibTypes}}
