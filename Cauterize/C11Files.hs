@@ -24,8 +24,12 @@ renderCFile s = renderFile s "templates/cFile.tmpl.c"
 renderFile :: Sp.Spec -> String -> IO Text
 renderFile s p = do
     template <- getDataFileName p >>= T.readFile 
-    hastacheStr defaultConfig (encodeStr $ T.unpack template) . mkGenericContext $ cSpec
+    cfg <- mkCfg
+    hastacheStr cfg (encodeStr $ T.unpack template) . mkGenericContext $ cSpec
     where
+      mkCfg = do
+        tpath <- getDataFileName "templates/"
+        return $ defaultConfig { muEscapeFunc = id, muTemplateFileDir = Just tpath } :: IO (MuConfig IO)
       cSpec = mkCSpec s
 
 
