@@ -10,3 +10,4 @@ hashtype_t const TYPE_HASH_{{cLibName}}_{{ctName}} =
 
 {{> cFilePackedSize.tmpl.c}}
 {{> cFileInit.tmpl.c}}
+{{> cFileOrder.tmpl.c}}

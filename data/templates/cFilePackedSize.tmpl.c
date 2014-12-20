@@ -96,4 +96,3 @@ size_t packed_size_{{ctName}}(struct {{ctName}} const * const _c_obj) {
 
 {{/ctDetails}}
 {{/cLibTypes}}
-
