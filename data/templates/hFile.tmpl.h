@@ -19,16 +19,27 @@ extern hashtype_t const SCHEMA_HASH_{{cLibName}};
 extern hashtype_t const TYPE_HASH_{{cLibName}}_{{ctName}};
 {{/cLibTypes}}
 
-{{! Emit type size information. }}
+/* Type size information. */
 {{#cLibTypes}}
 #define MIN_SIZE_{{cLibName}}_{{ctName}} ({{ctMinSize}})
 #define MAX_SIZE_{{cLibName}}_{{ctName}} ({{ctMaxSize}})
 
 {{/cLibTypes}}
 
-{{! Emit type forward declarations (if any). }}
+/* Array and vector lengths. */
 {{#cLibTypes}}
 {{#ctDetails}}
+{{#CArray}}
+#define CONST_{{cLibName}}_{{ctName}}_LENGTH ({{ctdArrayLen}})
+{{/CArray}}
+{{#CVector}}
+#define CONST_{{cLibName}}_{{ctName}}_MAX_LENGTH ({{ctdVectorMaxLen}})
+{{/CVector}}
+{{/ctDetails}}
+{{/cLibTypes}}
+
+/* Forward delcarations for types. */
+{{#cLibTypes}}{{#ctDetails}}
 {{#CBuiltIn}}
 typedef {{ctdStdType}} {{ctName}};
 {{/CBuiltIn}}
@@ -56,5 +67,18 @@ struct {{ctName}};
 {{#CPad}}
 struct {{ctName}};
 {{/CPad}}
+{{/ctDetails}}{{/cLibTypes}}
+
+/* Function prototypes. */
+{{#cLibTypes}}
+{{#ctDetails}}
+enum caut_status pack_{{ctName}}(struct caut_pack_iter * const _c_iter, {{ctName}} const * const _c_obj);
+enum caut_status unpack_{{ctName}}(struct caut_unpack_iter * const _c_iter, {{ctName}} * const _c_obj);
+size_t packed_size_{{ctName}}({{ctName}} const * const _c_obj);
+void init_{{ctName}}({{ctName}} * _c_obj);
+enum caut_ord order_{{ctName}}({{ctName}} const * const _c_a, {{ctName}} const * const _c_b);
+
 {{/ctDetails}}
 {{/cLibTypes}}
+
+#endif /* _CAUTERIZE_C11SYNC_{{cLibName}}_ */
