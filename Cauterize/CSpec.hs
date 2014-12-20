@@ -16,6 +16,7 @@ data CSpec = CSpec
   , cLibVersion :: Text
   , cLibMinSize :: Word64
   , cLibMaxSize :: Word64
+  , cLibHashStr :: Text
   , cLibTypes :: [CType]
   } deriving (Data, Typeable, Show)
 
@@ -52,6 +53,7 @@ mkCSpec s = CSpec { cLibName = libName s
                   , cLibVersion = libVersion s
                   , cLibMinSize = fromIntegral . Sp.minSize . Sp.specSize $ s
                   , cLibMaxSize = fromIntegral . Sp.maxSize . Sp.specSize $ s
+                  , cLibHashStr = libHashToText . Sp.specHash $ s
                   , cLibTypes = P.map mkCType $ Sp.specTypes s
                   }
 

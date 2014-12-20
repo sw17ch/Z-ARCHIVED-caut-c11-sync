@@ -1,6 +1,7 @@
 {-# LANGUAGE OverloadedStrings #-}
 module Cauterize.C11Files
   ( renderHFile
+  , renderCFile
   ) where
 
 import Text.Hastache
@@ -15,9 +16,14 @@ import Data.Text.Lazy.IO as T
 import Paths_c11sync
 
 renderHFile :: Sp.Spec -> IO Text
-renderHFile s = do
-    template <- getDataFileName "templates/hFile.tmpl.h" >>= T.readFile 
-    print cSpec
+renderHFile s = renderFile s "templates/hFile.tmpl.h"
+
+renderCFile :: Sp.Spec -> IO Text
+renderCFile s = renderFile s "templates/cFile.tmpl.c"
+
+renderFile :: Sp.Spec -> String -> IO Text
+renderFile s p = do
+    template <- getDataFileName p >>= T.readFile 
     hastacheStr defaultConfig (encodeStr $ T.unpack template) . mkGenericContext $ cSpec
     where
       cSpec = mkCSpec s

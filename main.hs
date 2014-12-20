@@ -80,7 +80,7 @@ caut2c11 opts = do
 render :: Sp.Spec -> String -> IO ()
 render spec path = do
   renderHFile spec >>= T.writeFile (path `combine` hFileName spec) 
-  -- writeFile (path `combine` cFileName spec) cFile
+  renderCFile spec >>= T.writeFile (path `combine` cFileName spec)
   -- writeFile (path `combine` aFileName spec) aFile
   -- writeFile (path `combine` tFileName spec) tFile
 
@@ -99,5 +99,4 @@ render spec path = do
   copyFile socket99_c (path `combine` "socket99.c")
 
 renderAiFiles :: Sp.Spec -> AI.Ai -> FilePath -> IO ()
-renderAiFiles spec ai path = do
-  T.putStrLn "!!!!!!!!!!!!!!! AI Files."
+renderAiFiles _ _ _ = return ()
