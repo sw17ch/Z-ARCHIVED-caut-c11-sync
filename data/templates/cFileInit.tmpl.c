@@ -43,11 +43,11 @@ void init_{{ctName}}(struct {{ctName}} * _c_obj) {
 void init_{{ctName}}(struct {{ctName}} * _c_obj) {
 {{#ctdFields.0}}
 {{#CNamedRef}}
-  _c_obj->_tag = ({{ctdEnumTagReprName}}) {{ctName}}_tag_{{cnrName}};
+  _c_obj->_tag = ({{ctdEnumTagReprDecl}}) {{ctName}}_tag_{{cnrName}};
   init_bool(&_c_obj->a);
 {{/CNamedRef}}
 {{#CNamedEmpty}}
-  _c_obj->_tag = ({{ctdEnumTagReprName}}) {{ctName}}_tag_{{cneName}};
+  _c_obj->_tag = ({{ctdEnumTagReprDecl}}) {{ctName}}_tag_{{cneName}};
   /* No data associated with field `{{cnrName}}`. */
 {{/CNamedEmpty}}
 {{/ctdFields.0}}

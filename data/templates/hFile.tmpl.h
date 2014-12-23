@@ -44,7 +44,7 @@ extern hashtype_t const TYPE_HASH_{{cLibName}}_{{ctName}};
 typedef {{ctdStdType}} {{ctName}};
 {{/CBuiltIn}}
 {{#CConst}}
-typedef {{ctdReprName}} {{ctName}};
+typedef {{ctdReprDecl}} {{ctName}};
 {{/CConst}}
 {{#CArray}}
 struct {{ctName}};
@@ -53,7 +53,7 @@ struct {{ctName}};
 struct {{ctName}};
 {{/CVector}}
 {{#CScalar}}
-typedef {{ctdReprName}} {{ctName}};
+typedef {{ctdReprDecl}} {{ctName}};
 {{/CScalar}}
 {{#CStruct}}
 struct {{ctName}};
@@ -72,69 +72,12 @@ struct {{ctName}};
 /* Function prototypes. */
 {{#cLibTypes}}
 {{#ctDetails}}
-{{#CBuiltIn}}
-enum caut_status pack_{{ctName}}(struct caut_pack_iter * const _c_iter, {{ctName}} const * const _c_obj);
-enum caut_status unpack_{{ctName}}(struct caut_unpack_iter * const _c_iter, {{ctName}} * const _c_obj);
-size_t packed_size_{{ctName}}({{ctName}} const * const _c_obj);
-void init_{{ctName}}({{ctName}} * _c_obj);
-enum caut_ord order_{{ctName}}({{ctName}} const * const _c_a, {{ctName}} const * const _c_b);
-{{/CBuiltIn}}
-{{#CConst}}
-enum caut_status pack_{{ctName}}(struct caut_pack_iter * const _c_iter, {{ctName}} const * const _c_obj);
-enum caut_status unpack_{{ctName}}(struct caut_unpack_iter * const _c_iter, {{ctName}} * const _c_obj);
-size_t packed_size_{{ctName}}({{ctName}} const * const _c_obj);
-void init_{{ctName}}({{ctName}} * _c_obj);
-enum caut_ord order_{{ctName}}({{ctName}} const * const _c_a, {{ctName}} const * const _c_b);
-{{/CConst}}
-{{#CArray}}
-enum caut_status pack_{{ctName}}(struct caut_pack_iter * const _c_iter, struct {{ctName}} const * const _c_obj);
-enum caut_status unpack_{{ctName}}(struct caut_unpack_iter * const _c_iter, struct {{ctName}} * const _c_obj);
-size_t packed_size_{{ctName}}(struct {{ctName}} const * const _c_obj);
-void init_{{ctName}}(struct {{ctName}} * _c_obj);
-enum caut_ord order_{{ctName}}(struct {{ctName}} const * const _c_a, struct {{ctName}} const * const _c_b);
-{{/CArray}}
-{{#CVector}}
-enum caut_status pack_{{ctName}}(struct caut_pack_iter * const _c_iter, struct {{ctName}} const * const _c_obj);
-enum caut_status unpack_{{ctName}}(struct caut_unpack_iter * const _c_iter, struct {{ctName}} * const _c_obj);
-size_t packed_size_{{ctName}}(struct {{ctName}} const * const _c_obj);
-void init_{{ctName}}(struct {{ctName}} * _c_obj);
-enum caut_ord order_{{ctName}}(struct {{ctName}} const * const _c_a, struct {{ctName}} const * const _c_b);
-{{/CVector}}
-{{#CScalar}}
-enum caut_status pack_{{ctName}}(struct caut_pack_iter * const _c_iter, {{ctName}} const * const _c_obj);
-enum caut_status unpack_{{ctName}}(struct caut_unpack_iter * const _c_iter, {{ctName}} * const _c_obj);
-size_t packed_size_{{ctName}}({{ctName}} const * const _c_obj);
-void init_{{ctName}}({{ctName}} * _c_obj);
-enum caut_ord order_{{ctName}}({{ctName}} const * const _c_a, {{ctName}} const * const _c_b);
-{{/CScalar}}
-{{#CStruct}}
-enum caut_status pack_{{ctName}}(struct caut_pack_iter * const _c_iter, struct {{ctName}} const * const _c_obj);
-enum caut_status unpack_{{ctName}}(struct caut_unpack_iter * const _c_iter, struct {{ctName}} * const _c_obj);
-size_t packed_size_{{ctName}}(struct {{ctName}} const * const _c_obj);
-void init_{{ctName}}(struct {{ctName}} * _c_obj);
-enum caut_ord order_{{ctName}}(struct {{ctName}} const * const _c_a, struct {{ctName}} const * const _c_b);
-{{/CStruct}}
-{{#CEnum}}
-enum caut_status pack_{{ctName}}(struct caut_pack_iter * const _c_iter, struct {{ctName}} const * const _c_obj);
-enum caut_status unpack_{{ctName}}(struct caut_unpack_iter * const _c_iter, struct {{ctName}} * const _c_obj);
-size_t packed_size_{{ctName}}(struct {{ctName}} const * const _c_obj);
-void init_{{ctName}}(struct {{ctName}} * _c_obj);
-enum caut_ord order_{{ctName}}(struct {{ctName}} const * const _c_a, struct {{ctName}} const * const _c_b);
-{{/CEnum}}
-{{#CSet}}
-enum caut_status pack_{{ctName}}(struct caut_pack_iter * const _c_iter, struct {{ctName}} const * const _c_obj);
-enum caut_status unpack_{{ctName}}(struct caut_unpack_iter * const _c_iter, struct {{ctName}} * const _c_obj);
-size_t packed_size_{{ctName}}(struct {{ctName}} const * const _c_obj);
-void init_{{ctName}}(struct {{ctName}} * _c_obj);
-enum caut_ord order_{{ctName}}(struct {{ctName}} const * const _c_a, struct {{ctName}} const * const _c_b);
-{{/CSet}}
-{{#CPad}}
-enum caut_status pack_{{ctName}}(struct caut_pack_iter * const _c_iter, struct {{ctName}} const * const _c_obj);
-enum caut_status unpack_{{ctName}}(struct caut_unpack_iter * const _c_iter, struct {{ctName}} * const _c_obj);
-size_t packed_size_{{ctName}}(struct {{ctName}} const * const _c_obj);
-void init_{{ctName}}(struct {{ctName}} * _c_obj);
-enum caut_ord order_{{ctName}}(struct {{ctName}} const * const _c_a, struct {{ctName}} const * const _c_b);
-{{/CPad}}
+enum caut_status pack_{{ctName}}(struct caut_pack_iter * const _c_iter, {{ctdDecl}} const * const _c_obj);
+enum caut_status unpack_{{ctName}}(struct caut_unpack_iter * const _c_iter, {{ctdDecl}} * const _c_obj);
+size_t packed_size_{{ctName}}({{ctdDecl}} const * const _c_obj);
+void init_{{ctName}}({{ctdDecl}} * _c_obj);
+enum caut_ord order_{{ctName}}({{ctdDecl}} const * const _c_a, {{ctdDecl}} const * const _c_b);
+
 {{/ctDetails}}
 {{/cLibTypes}}
 
@@ -142,23 +85,23 @@ enum caut_ord order_{{ctName}}(struct {{ctName}} const * const _c_a, struct {{ct
 {{#cLibTypes}}
 {{#ctDetails}}
 {{#CArray}}
-struct {{ctName}} {
-  struct {{ctName}} elems[CONST_{{cLibName}}_{{ctName}}_LENGTH];
+{{ctdDecl}} {
+  {{ctdReprDecl}} elems[CONST_{{cLibName}}_{{ctName}}_LENGTH];
 };
 
 {{/CArray}}
 {{#CVector}}
-struct {{ctName}} {
-  {{ctdVectorMaxLenReprName}} _length;
-  {{ctdReprName}} elems[CONST_{{cLibName}}_{{ctName}}_MAX_LENGTH];
+{{ctdDecl}} {
+  {{ctdVectorMaxLenReprDecl}} _length;
+  {{ctdReprDecl}} elems[CONST_{{cLibName}}_{{ctName}}_MAX_LENGTH];
 };
 
 {{/CVector}}
 {{#CStruct}}
-struct {{ctName}} {
+{{ctdDecl}} {
 {{#ctdFields}}
 {{#CNamedRef}}
-  {{cnrRefName}} {{cnrName}};
+  {{cnrRefDecl}} {{cnrName}};
 {{/CNamedRef}}
 {{#CNamedEmpty}}
   /* No data for field `{{cneName}}`. */
@@ -168,7 +111,7 @@ struct {{ctName}} {
 
 {{/CStruct}}
 {{#CEnum}}
-struct {{ctName}} {
+{{ctdDecl}} {
   enum {{ctName}}_tag {
 {{#ctdFields}}
 {{#CNamedRef}}
@@ -180,12 +123,12 @@ struct {{ctName}} {
 {{/ctdFields}}
   };
 
-  {{ctdEnumTagReprName}} _tag;
+  {{ctdEnumTagReprDecl}} _tag;
 
   union {
 {{#ctdFields}}
 {{#CNamedRef}}
-    {{cnrReprName}} {{cnrName}};
+    {{cnrReprDecl}} {{cnrName}};
 {{/CNamedRef}}
 {{#CNamedEmpty}}
     /* No data for field `{{cneName}}`. */
@@ -196,12 +139,12 @@ struct {{ctName}} {
 
 {{/CEnum}}
 {{#CSet}}
-struct {{ctName}} {
-  {{ctdSetFlagsReprName}} _flags;
+{{ctdDecl}} {
+  {{ctdSetFlagsReprDecl}} _flags;
 
 {{#ctdFields}}
 {{#CNamedRef}}
-  {{cnrRefName}} {{cnrName}};
+  {{cnrRefDecl}} {{cnrName}};
 {{/CNamedRef}}
 {{#CNamedEmpty}}
   /* No data for field `{{cnrName}}`. */
@@ -210,7 +153,7 @@ struct {{ctName}} {
 
 {{/CSet}}
 {{#CPad}}
-struct {{ctName}} {
+{{ctdDecl}} {
   uint8_t pad[MAX_SIZE_{{cLibTypes}}_{{ctName}}];
 };
 

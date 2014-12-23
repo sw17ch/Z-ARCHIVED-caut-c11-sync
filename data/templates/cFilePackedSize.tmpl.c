@@ -2,9 +2,11 @@
 {{#ctDetails}}
 {{#CBuiltIn}}
 size_t packed_size_{{ctName}}({{ctName}} const * const _c_obj) {
+  (void) _c_obj;
   return MAX_SIZE_{{cLibName}}_{{ctName}};
 {{/CBuiltIn}}
 {{#CConst}}
+  (void) _c_obj;
   return MAX_SIZE_{{cLibName}}_{{ctName}};
 {{/CConst}}
 {{#CArray}}
@@ -55,12 +57,12 @@ size_t packed_size_{{ctName}}(struct {{ctName}} const * const _c_obj) {
   switch (_c_obj->_tag) {
 {{#ctdFields}}
 {{#CNamedRef}}
-  case u_tag_a:
+  case {{ctName}}_tag_{{cnrName}}:
     _c_size += packed_size_{{cnrRefName}}(&_c_obj->{{cnrName}});
     break;
 {{/CNamedRef}}
 {{#CNamedEmpty}}
-  case u_tag_a:
+  case {{ctName}}_tag_{{cneName}}:
     /* No data for field `{{cneName}}`. */
     break;
 {{/CNamedEmpty}}
