@@ -31,7 +31,7 @@ data CType = CType { ctName :: Text
                    }
   deriving (Data, Typeable, Show)
 
-data CTypeDetails = CBuiltIn { ctdDecl :: Text, ctdStdType :: Text }
+data CTypeDetails = CBuiltIn { ctdDecl :: Text, needTypeDef :: Bool }
                   | CConst   { ctdDecl :: Text, ctdReprName :: Text, ctdReprDecl :: Text, ctdConstVal :: Integer }
                   | CArray   { ctdDecl :: Text, ctdReprName :: Text, ctdReprDecl :: Text, ctdArrayLen :: Integer }
                   | CVector  { ctdDecl :: Text, ctdReprName :: Text, ctdReprDecl :: Text, ctdVectorMaxLen :: Integer, ctdVectorMaxLenReprDecl :: Text }
@@ -88,11 +88,14 @@ mkCTypeDetails :: (Text -> Text) -> Sp.SpType -> CTypeDetails
 mkCTypeDetails nameToDecl' t =
   case t of
     Sp.BuiltIn { Sp.unBuiltIn = Sp.TBuiltIn { Sp.unTBuiltIn = b } } ->
-      CBuiltIn { ctdDecl = d, ctdStdType = builtInToStdType b }
+      -- This is a glorious hack to work around `bool` being a meaningful phrase in C
+      case b of
+        Sp.BIbool -> CBuiltIn { ctdDecl = builtInToStdType b, needTypeDef = False }
+        _ -> CBuiltIn { ctdDecl = builtInToStdType b, needTypeDef = True }
     Sp.Scalar { Sp.unScalar = Sp.TScalar { Sp.scalarRepr = r } } ->
-      CScalar { ctdDecl = d, ctdReprName = pack . show $ r, ctdReprDecl = biToDecl r }
+      CScalar { ctdDecl = d, ctdReprName = builtInToStdType r, ctdReprDecl = builtInToStdType r }
     Sp.Const { Sp.unConst = Sp.TConst { Sp.constRepr = r, Sp.constValue = v } } ->
-      CConst { ctdDecl = d, ctdReprName = pack . show $ r, ctdReprDecl = biToDecl r , ctdConstVal  = v }
+      CConst { ctdDecl = d, ctdReprName = builtInToStdType r, ctdReprDecl = builtInToStdType r , ctdConstVal  = v }
     Sp.Array { Sp.unFixed = Sp.TArray { Sp.arrayRef = r, Sp.arrayLen = l } } ->
       CArray { ctdDecl = d, ctdReprName = pack r, ctdReprDecl = nameToDecl r , ctdArrayLen = l }
     Sp.Vector { Sp.unBounded = Sp.TVector { Sp.vectorRef = r, Sp.vectorMaxLen = l } , Sp.lenRepr = Sp.LengthRepr lr } ->
@@ -100,26 +103,25 @@ mkCTypeDetails nameToDecl' t =
               , ctdReprName = pack r
               , ctdReprDecl = nameToDecl r
               , ctdVectorMaxLen = l
-              , ctdVectorMaxLenReprDecl = biToDecl lr
+              , ctdVectorMaxLenReprDecl = builtInToStdType lr
               }
     Sp.Struct { Sp.unStruct = Sp.TStruct { Sp.structFields = Sp.Fields fs } } ->
       CStruct { ctdDecl = d, ctdFields = P.map (mkNamedRef nameToDecl') fs }
     Sp.Set { Sp.unSet = Sp.TSet { Sp.setFields = Sp.Fields fs } , Sp.flagsRepr = Sp.FlagsRepr r } ->
       CSet { ctdDecl = d
            , ctdFields = P.map (mkNamedRef nameToDecl') fs
-           , ctdSetFlagsReprDecl = biToDecl r
+           , ctdSetFlagsReprDecl = builtInToStdType r
            }
     Sp.Enum { Sp.unEnum = Sp.TEnum { Sp.enumFields = Sp.Fields fs } , Sp.tagRepr = Sp.TagRepr r } ->
       CEnum { ctdDecl = d
             , ctdFields = P.map (mkNamedRef nameToDecl') fs
-            , ctdEnumTagReprDecl = biToDecl r
+            , ctdEnumTagReprDecl = builtInToStdType r
             }
     Sp.Pad { Sp.unPad = Sp.TPad { Sp.padLength = l } } ->
       CPad { ctdDecl = d, ctdPadLen = l }
   where
     d = mkDecl t
     nameToDecl = nameToDecl' . pack
-    biToDecl = nameToDecl' . pack . show
 
 mkNamedRef :: (Text -> Text) -> Sp.Field -> CNamedRef
 mkNamedRef nameToDecl Sp.Field { Sp.fName = n, Sp.fRef = r, Sp.fIndex = i } =

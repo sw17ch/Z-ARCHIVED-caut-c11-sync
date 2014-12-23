@@ -6,6 +6,7 @@ size_t packed_size_{{ctName}}({{ctName}} const * const _c_obj) {
   return MAX_SIZE_{{cLibName}}_{{ctName}};
 {{/CBuiltIn}}
 {{#CConst}}
+size_t packed_size_{{ctName}}({{ctName}} const * const _c_obj) {
   (void) _c_obj;
   return MAX_SIZE_{{cLibName}}_{{ctName}};
 {{/CConst}}
@@ -31,6 +32,7 @@ size_t packed_size_{{ctName}}(struct {{ctName}} const * const _c_obj) {
 {{/CVector}}
 {{#CScalar}}
 size_t packed_size_{{ctName}}({{ctName}} const * const _c_obj) {
+  (void) _c_obj;
   return MAX_SIZE_{{cLibName}}_{{ctName}};
 {{/CScalar}}
 {{#CStruct}}
@@ -78,11 +80,12 @@ size_t packed_size_{{ctName}}(struct {{ctName}} const * const _c_obj) {
   size_t _c_size = sizeof(_c_obj->_flags);
 
 {{#ctdFields}}
-  if (_c_obj->_flags & (1 << 0)) {
 {{#CNamedRef}}
+  if (_c_obj->_flags & (1 << {{cnrIndex}})) {
     _c_size += packed_size_{{cnrRefName}}(&_c_obj->{{cnrName}});
 {{/CNamedRef}}
 {{#CNamedEmpty}}
+  if (_c_obj->_flags & (1 << {{cneIndex}})) {
     /* No data for field `{{cneName}}`. */
 {{/CNamedEmpty}}
   }
@@ -92,6 +95,7 @@ size_t packed_size_{{ctName}}(struct {{ctName}} const * const _c_obj) {
 {{/CSet}}
 {{#CPad}}
 size_t packed_size_{{ctName}}(struct {{ctName}} const * const _c_obj) {
+  (void) _c_obj;
   return MAX_SIZE_{{cLibName}}_{{ctName}};
 {{/CPad}}
 }

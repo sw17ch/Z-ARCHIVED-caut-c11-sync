@@ -41,7 +41,9 @@ extern hashtype_t const TYPE_HASH_{{cLibName}}_{{ctName}};
 /* Forward delcarations for types. */
 {{#cLibTypes}}{{#ctDetails}}
 {{#CBuiltIn}}
-typedef {{ctdStdType}} {{ctName}};
+{{#needTypeDef}}
+typedef {{ctdDecl}} {{ctName}};
+{{/needTypeDef}}
 {{/CBuiltIn}}
 {{#CConst}}
 typedef {{ctdReprDecl}} {{ctName}};
@@ -128,7 +130,7 @@ enum caut_ord order_{{ctName}}({{ctdDecl}} const * const _c_a, {{ctdDecl}} const
   union {
 {{#ctdFields}}
 {{#CNamedRef}}
-    {{cnrReprDecl}} {{cnrName}};
+    {{cnrRefDecl}} {{cnrName}};
 {{/CNamedRef}}
 {{#CNamedEmpty}}
     /* No data for field `{{cneName}}`. */
@@ -149,12 +151,13 @@ enum caut_ord order_{{ctName}}({{ctdDecl}} const * const _c_a, {{ctdDecl}} const
 {{#CNamedEmpty}}
   /* No data for field `{{cnrName}}`. */
 {{/CNamedEmpty}}
+{{/ctdFields}}
 };
 
 {{/CSet}}
 {{#CPad}}
 {{ctdDecl}} {
-  uint8_t pad[MAX_SIZE_{{cLibTypes}}_{{ctName}}];
+  uint8_t pad[MAX_SIZE_{{cLibName}}_{{ctName}}];
 };
 
 {{/CPad}}
