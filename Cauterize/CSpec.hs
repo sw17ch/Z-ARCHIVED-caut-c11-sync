@@ -15,19 +15,19 @@ import qualified Cauterize.Common.Types as Sp
 import Cauterize.Format
 
 data CSpec = CSpec
-  { cLibName :: Text
-  , cLibVersion :: Text
-  , cLibMinSize :: Word64
-  , cLibMaxSize :: Word64
-  , cLibHashStr :: Text
-  , cLibTypes :: [CType]
+  { cLibName :: Text -- ^ The name of the library suitable for C names.
+  , cLibVersion :: Text -- ^ The version of the library as a C string.
+  , cLibMinSize :: Word64 -- ^ The minimum encoded size.
+  , cLibMaxSize :: Word64 -- ^ The maximum encoded size.
+  , cLibHashStr :: Text -- ^ The library hash as comma-separated hex characters.
+  , cLibTypes :: [CType] -- ^ The types from the schema with C details.
   } deriving (Data, Typeable, Show)
 
-data CType = CType { ctName :: Text
-                   , ctMinSize :: Integer
-                   , ctMaxSize :: Integer
-                   , ctHashStr :: Text
-                   , ctDetails :: CTypeDetails
+data CType = CType { ctName :: Text -- ^ The name of the type suitable for C names.
+                   , ctMinSize :: Integer -- ^ The minimum packed size of the type.
+                   , ctMaxSize :: Integer -- ^ The maximum size of the packed type.
+                   , ctHashStr :: Text -- ^ The type hash as comma-separated hex characters.
+                   , ctDetails :: CTypeDetails -- ^ Additional details for each type.
                    }
   deriving (Data, Typeable, Show)
 
