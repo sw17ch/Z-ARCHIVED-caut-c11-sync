@@ -126,6 +126,7 @@ enum caut_ord order_{{ctName}}({{ctdDecl}} const * const _c_a, {{ctdDecl}} const
   };
 
   {{ctdEnumTagReprDecl}} _tag;
+{{#ctdHasData}}
 
   union {
 {{#ctdFields}}
@@ -137,6 +138,7 @@ enum caut_ord order_{{ctName}}({{ctdDecl}} const * const _c_a, {{ctdDecl}} const
 {{/CNamedEmpty}}
 {{/ctdFields}}
   };
+{{/ctdHasData}}
 };
 
 {{/CEnum}}

@@ -37,7 +37,7 @@ data CTypeDetails = CBuiltIn { ctdDecl :: Text, needTypeDef :: Bool }
                   | CVector  { ctdDecl :: Text, ctdReprName :: Text, ctdReprDecl :: Text, ctdVectorMaxLen :: Integer, ctdVectorMaxLenReprDecl :: Text }
                   | CScalar  { ctdDecl :: Text, ctdReprName :: Text, ctdReprDecl :: Text }
                   | CStruct  { ctdDecl :: Text, ctdFields :: [CNamedRef] }
-                  | CEnum    { ctdDecl :: Text, ctdFields :: [CNamedRef], ctdEnumTagReprDecl :: Text }
+                  | CEnum    { ctdDecl :: Text, ctdFields :: [CNamedRef], ctdHasData :: Bool, ctdEnumTagReprDecl :: Text }
                   | CSet     { ctdDecl :: Text, ctdFields :: [CNamedRef], ctdSetFlagsReprDecl :: Text }
                   | CPad     { ctdDecl :: Text, ctdPadLen :: Integer }
   deriving (Data, Typeable, Show)
@@ -106,22 +106,32 @@ mkCTypeDetails nameToDecl' t =
               , ctdVectorMaxLenReprDecl = builtInToStdType lr
               }
     Sp.Struct { Sp.unStruct = Sp.TStruct { Sp.structFields = Sp.Fields fs } } ->
-      CStruct { ctdDecl = d, ctdFields = P.map (mkNamedRef nameToDecl') fs }
+      let fs' = P.map mkNamedRef' fs
+      in CStruct { ctdDecl = d, ctdFields = fs' }
     Sp.Set { Sp.unSet = Sp.TSet { Sp.setFields = Sp.Fields fs } , Sp.flagsRepr = Sp.FlagsRepr r } ->
-      CSet { ctdDecl = d
-           , ctdFields = P.map (mkNamedRef nameToDecl') fs
-           , ctdSetFlagsReprDecl = builtInToStdType r
-           }
+      let fs' = P.map mkNamedRef' fs
+      in CSet { ctdDecl = d
+              , ctdFields = fs'
+              , ctdSetFlagsReprDecl = builtInToStdType r
+              }
     Sp.Enum { Sp.unEnum = Sp.TEnum { Sp.enumFields = Sp.Fields fs } , Sp.tagRepr = Sp.TagRepr r } ->
-      CEnum { ctdDecl = d
-            , ctdFields = P.map (mkNamedRef nameToDecl') fs
-            , ctdEnumTagReprDecl = builtInToStdType r
-            }
+      let fs' = P.map mkNamedRef' fs
+      in CEnum { ctdDecl = d
+               , ctdFields = fs'
+               , ctdEnumTagReprDecl = builtInToStdType r
+               , ctdHasData = hasData fs'
+               }
     Sp.Pad { Sp.unPad = Sp.TPad { Sp.padLength = l } } ->
       CPad { ctdDecl = d, ctdPadLen = l }
   where
+    mkNamedRef' = mkNamedRef nameToDecl'
     d = mkDecl t
     nameToDecl = nameToDecl' . pack
+
+hasData :: [CNamedRef] -> Bool
+hasData [] = False
+hasData (CNamedEmpty {}:fs) = hasData fs
+hasData (CNamedRef {}:_) = True
 
 mkNamedRef :: (Text -> Text) -> Sp.Field -> CNamedRef
 mkNamedRef nameToDecl Sp.Field { Sp.fName = n, Sp.fRef = r, Sp.fIndex = i } =
