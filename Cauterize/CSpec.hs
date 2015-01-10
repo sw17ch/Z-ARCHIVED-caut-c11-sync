@@ -36,18 +36,22 @@ data CTypeDetails = CBuiltIn { ctdDecl :: Text, needTypeDef :: Bool }
                   | CArray   { ctdDecl :: Text, ctdReprName :: Text, ctdReprDecl :: Text, ctdArrayLen :: Integer }
                   | CVector  { ctdDecl :: Text, ctdReprName :: Text, ctdReprDecl :: Text, ctdVectorMaxLen :: Integer, ctdVectorMaxLenReprDecl :: Text }
                   | CScalar  { ctdDecl :: Text, ctdReprName :: Text, ctdReprDecl :: Text }
-                  | CStruct  { ctdDecl :: Text, ctdFields :: [CNamedRef] }
-                  | CEnum    { ctdDecl :: Text, ctdFields :: [CNamedRef], ctdHasData :: Bool, ctdEnumTagReprDecl :: Text }
-                  | CSet     { ctdDecl :: Text, ctdFields :: [CNamedRef], ctdSetFlagsReprDecl :: Text }
+                  | CStruct  { ctdDecl :: Text, ctdFields :: [CNamedField] }
+                  | CEnum    { ctdDecl :: Text, ctdFields :: [CNamedField], ctdHasData :: Bool, ctdEnumTagReprDecl :: Text }
+                  | CSet     { ctdDecl :: Text, ctdFields :: [CNamedField], ctdSetFlagsReprDecl :: Text }
                   | CPad     { ctdDecl :: Text, ctdPadLen :: Integer }
   deriving (Data, Typeable, Show)
 
-data CNamedRef = CNamedRef { cnrName :: Text
-                           , cnrRefName :: Text
-                           , cnrRefDecl :: Text
-                           , cnrIndex :: Integer
-                           }
-               | CNamedEmpty { cneName :: Text
+{- | Named Fields are used to indicate the structure of fields in Enumerations,
+ - Sets, and Structures. A Named Reference is used when a reference has
+ - associated data. The Empty Reference is used when fields don't have
+ - associated data. -}
+data CNamedField = CNamedRef { cnrName :: Text
+                             , cnrRefName :: Text
+                             , cnrRefDecl :: Text
+                             , cnrIndex :: Integer
+                             }
+                 | CNamedEmpty { cneName :: Text
                              , cneIndex :: Integer
                              }
   deriving (Data, Typeable, Show)
@@ -128,12 +132,12 @@ mkCTypeDetails nameToDecl' t =
     d = mkDecl t
     nameToDecl = nameToDecl' . pack
 
-hasData :: [CNamedRef] -> Bool
+hasData :: [CNamedField] -> Bool
 hasData [] = False
 hasData (CNamedEmpty {}:fs) = hasData fs
 hasData (CNamedRef {}:_) = True
 
-mkNamedRef :: (Text -> Text) -> Sp.Field -> CNamedRef
+mkNamedRef :: (Text -> Text) -> Sp.Field -> CNamedField
 mkNamedRef nameToDecl Sp.Field { Sp.fName = n, Sp.fRef = r, Sp.fIndex = i } =
   CNamedRef { cnrName = pack n
             , cnrRefName = pack r
