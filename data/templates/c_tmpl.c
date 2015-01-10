@@ -8,6 +8,6 @@ hashtype_t const TYPE_HASH_{{cLibName}}_{{ctName}} =
   { {{cLibHashStr}} };
 {{/cLibTypes}}
 
-{{> cFilePackedSize.tmpl.c}}
-{{> cFileInit.tmpl.c}}
-{{> cFileOrder.tmpl.c}}
+{{> c.packed_size_tmpl.c}}
+{{> c.init_tmpl.c}}
+{{> c.order_tmpl.c}}

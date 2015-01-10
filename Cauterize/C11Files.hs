@@ -16,10 +16,10 @@ import Data.Text.Lazy.IO as T
 import Paths_c11sync
 
 renderHFile :: Sp.Spec -> IO Text
-renderHFile s = renderFile s "templates/hFile.tmpl.h"
+renderHFile s = renderFile s "templates/h_tmpl.h"
 
 renderCFile :: Sp.Spec -> IO Text
-renderCFile s = renderFile s "templates/cFile.tmpl.c"
+renderCFile s = renderFile s "templates/c_tmpl.c"
 
 renderFile :: Sp.Spec -> String -> IO Text
 renderFile s p = do
