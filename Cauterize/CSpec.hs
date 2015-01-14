@@ -34,11 +34,14 @@ data CType = CType { ctName :: Text -- ^ The name of the type suitable for C nam
 data CTypeDetails = CBuiltIn { ctdDecl :: Text, needTypeDef :: Bool }
                   | CConst   { ctdDecl :: Text, ctdReprName :: Text, ctdReprDecl :: Text, ctdConstVal :: Integer }
                   | CArray   { ctdDecl :: Text, ctdReprName :: Text, ctdReprDecl :: Text, ctdArrayLen :: Integer }
-                  | CVector  { ctdDecl :: Text, ctdReprName :: Text, ctdReprDecl :: Text, ctdVectorMaxLen :: Integer, ctdVectorMaxLenReprDecl :: Text }
+                  | CVector  { ctdDecl :: Text, ctdReprName :: Text, ctdReprDecl :: Text, ctdVectorMaxLen :: Integer, ctdVectorMaxLenReprName :: Text, ctdVectorMaxLenReprDecl :: Text }
                   | CScalar  { ctdDecl :: Text, ctdReprName :: Text, ctdReprDecl :: Text }
                   | CStruct  { ctdDecl :: Text, ctdFields :: [CNamedField] }
-                  | CEnum    { ctdDecl :: Text, ctdFields :: [CNamedField], ctdHasData :: Bool, ctdEnumTagReprDecl :: Text }
-                  | CSet     { ctdDecl :: Text, ctdFields :: [CNamedField], ctdSetFlagsReprDecl :: Text }
+                  -- TODO: ctdEnumTagReprDecl should not be a repr decl. It
+                  -- just happens to be. It should probably just be the
+                  -- reprName.
+                  | CEnum    { ctdDecl :: Text, ctdFields :: [CNamedField], ctdHasData :: Bool, ctdEnumTagReprName :: Text, ctdEnumTagReprDecl :: Text }
+                  | CSet     { ctdDecl :: Text, ctdFields :: [CNamedField], ctdSetFlagsReprName :: Text, ctdSetFlagsReprDecl :: Text }
                   | CPad     { ctdDecl :: Text, ctdPadLen :: Integer }
   deriving (Data, Typeable, Show)
 
@@ -97,9 +100,9 @@ mkCTypeDetails nameToDecl' t =
         Sp.BIbool -> CBuiltIn { ctdDecl = builtInToStdType b, needTypeDef = False }
         _ -> CBuiltIn { ctdDecl = builtInToStdType b, needTypeDef = True }
     Sp.Scalar { Sp.unScalar = Sp.TScalar { Sp.scalarRepr = r } } ->
-      CScalar { ctdDecl = d, ctdReprName = builtInToStdType r, ctdReprDecl = builtInToStdType r }
+      CScalar { ctdDecl = d, ctdReprName = pack . show $ r, ctdReprDecl = builtInToStdType r }
     Sp.Const { Sp.unConst = Sp.TConst { Sp.constRepr = r, Sp.constValue = v } } ->
-      CConst { ctdDecl = d, ctdReprName = builtInToStdType r, ctdReprDecl = builtInToStdType r , ctdConstVal  = v }
+      CConst { ctdDecl = d, ctdReprName = pack . show $ r, ctdReprDecl = builtInToStdType r , ctdConstVal  = v }
     Sp.Array { Sp.unFixed = Sp.TArray { Sp.arrayRef = r, Sp.arrayLen = l } } ->
       CArray { ctdDecl = d, ctdReprName = pack r, ctdReprDecl = nameToDecl r , ctdArrayLen = l }
     Sp.Vector { Sp.unBounded = Sp.TVector { Sp.vectorRef = r, Sp.vectorMaxLen = l } , Sp.lenRepr = Sp.LengthRepr lr } ->
@@ -107,6 +110,7 @@ mkCTypeDetails nameToDecl' t =
               , ctdReprName = pack r
               , ctdReprDecl = nameToDecl r
               , ctdVectorMaxLen = l
+              , ctdVectorMaxLenReprName = pack . show $ lr
               , ctdVectorMaxLenReprDecl = builtInToStdType lr
               }
     Sp.Struct { Sp.unStruct = Sp.TStruct { Sp.structFields = Sp.Fields fs } } ->
@@ -116,12 +120,14 @@ mkCTypeDetails nameToDecl' t =
       let fs' = P.map mkNamedRef' fs
       in CSet { ctdDecl = d
               , ctdFields = fs'
+              , ctdSetFlagsReprName = pack . show $ r
               , ctdSetFlagsReprDecl = builtInToStdType r
               }
     Sp.Enum { Sp.unEnum = Sp.TEnum { Sp.enumFields = Sp.Fields fs } , Sp.tagRepr = Sp.TagRepr r } ->
       let fs' = P.map mkNamedRef' fs
       in CEnum { ctdDecl = d
                , ctdFields = fs'
+               , ctdEnumTagReprName = pack . show $ r
                , ctdEnumTagReprDecl = builtInToStdType r
                , ctdHasData = hasData fs'
                }

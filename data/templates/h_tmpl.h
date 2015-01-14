@@ -26,7 +26,7 @@ extern hashtype_t const TYPE_HASH_{{cLibName}}_{{ctName}};
 
 {{/cLibTypes}}
 
-/* Array and vector lengths. */
+/* Array and vector lengths and const values. */
 {{#cLibTypes}}
 {{#ctDetails}}
 {{#CArray}}
@@ -35,6 +35,9 @@ extern hashtype_t const TYPE_HASH_{{cLibName}}_{{ctName}};
 {{#CVector}}
 #define CONST_{{cLibName}}_{{ctName}}_MAX_LENGTH ({{ctdVectorMaxLen}})
 {{/CVector}}
+{{#CConst}}
+#define CONST_{{cLibName}}_{{ctName}}_VALUE ({{ctdConstVal}})
+{{/CConst}}
 {{/ctDetails}}
 {{/cLibTypes}}
 
