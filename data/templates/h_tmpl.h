@@ -7,6 +7,7 @@
 
 #include "cauterize.h"
 
+{{#specInfo}}
 #define NAME_{{cLibName}} "{{cLibName}}"
 #define VERSION_{{cLibName}} "{{cLibVersion}}"
 #define MIN_SIZE_{{cLibName}} ({{cLibMinSize}})
@@ -170,3 +171,4 @@ enum caut_ord order_{{ctName}}({{ctdDecl}} const * const _c_a, {{ctdDecl}} const
 {{/cLibTypes}}
 
 #endif /* _CAUTERIZE_C11SYNC_{{cLibName}}_ */
+{{/specInfo}}

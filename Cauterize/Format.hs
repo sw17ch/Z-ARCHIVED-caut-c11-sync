@@ -3,9 +3,12 @@ module Cauterize.Format
   ( libName
   , libVersion
   , libHashToText
+  , bytesToCSV
 
   , cautNameToCName
   , builtInToStdType
+  , unsignedAsLengthInBytes
+  , builtInAsLengthInBytes
   ) where
 
 import Cauterize.FormHash
@@ -23,7 +26,10 @@ libVersion = pack . Sp.specVersion
 
 libHashToText :: FormHash -> Text
 libHashToText h = let bs = hashToBytes h
-                  in T.intercalate "," $ fmap showByte bs
+                  in bytesToCSV bs
+
+bytesToCSV :: [Word8] -> Text
+bytesToCSV bs = T.intercalate "," $ fmap showByte bs
   where
     showByte :: Word8 -> Text
     showByte b = let s = pack $ showHex b ""
@@ -47,3 +53,17 @@ builtInToStdType Sp.BIs64      = "int64_t"
 builtInToStdType Sp.BIieee754s = "float"
 builtInToStdType Sp.BIieee754d = "double"
 builtInToStdType Sp.BIbool     = "bool"
+
+unsignedAsLengthInBytes :: Integer -> Text
+unsignedAsLengthInBytes 1 = "uint8_t"
+unsignedAsLengthInBytes 2 = "uint16_t"
+unsignedAsLengthInBytes 4 = "uint32_t"
+unsignedAsLengthInBytes 8 = "uint64_t"
+unsignedAsLengthInBytes n = error $ "No unsigned representation has " ++ show n ++ " bytes."
+
+builtInAsLengthInBytes :: Integer -> Text
+builtInAsLengthInBytes 1 = "u8"
+builtInAsLengthInBytes 2 = "u16"
+builtInAsLengthInBytes 4 = "u32"
+builtInAsLengthInBytes 8 = "u64"
+builtInAsLengthInBytes n = error $ "No unsigned builtin representation has " ++ show n ++ " bytes."

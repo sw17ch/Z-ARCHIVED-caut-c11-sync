@@ -18,7 +18,7 @@ import Paths_c11sync
 
 data Caut2C11Opts = Caut2C11Opts
   { inputFile :: String
-  , aiInputFile :: Maybe String
+  , aiInputFile :: String
   , outputDirectory :: String
   } deriving (Show)
 
@@ -29,10 +29,9 @@ optParser = Caut2C11Opts
    <> metavar "FILE_PATH"
    <> help "Input Cauterize specification file."
     )
-  <*> (\m -> nullOption $ reader (\v -> return . Just $ v) `mappend` m)
+  <*> strOption
     ( long "ai-input"
    <> metavar "AI_FILE_PATH"
-   <> value Nothing
    <> help "Input Agnostic Interface specification file."
     )
   <*> strOption
@@ -68,21 +67,17 @@ caut2c11 opts = do
         Left e -> print e
         Right s' -> do
           createDirectory out
-          render s' out
-          case aiInputFile opts of
-            Just path -> do
-              p <- AI.parseFile path
-              case p of
-                Left e -> print e
-                Right ai -> renderAiFiles s' ai out
-            Nothing -> return ()
-  
-render :: Sp.Spec -> String -> IO ()
-render spec path = do
-  renderHFile spec >>= T.writeFile (path `combine` hFileName spec) 
-  renderCFile spec >>= T.writeFile (path `combine` cFileName spec)
-  -- writeFile (path `combine` aFileName spec) aFile
-  -- writeFile (path `combine` tFileName spec) tFile
+          p <- AI.parseFile (aiInputFile opts)
+          case p of
+            Left e -> print e
+            Right ai -> render s' ai out
+
+render :: Sp.Spec -> AI.Ai -> String -> IO ()
+render spec ai path = do
+  renderHFile ti >>= T.writeFile (path `combine` hFileName spec)
+  renderCFile ti >>= T.writeFile (path `combine` cFileName spec)
+  renderAIHFile ti >>= T.writeFile (path `combine` aihFileName spec)
+  renderAICFile ti >>= T.writeFile (path `combine` aicFileName spec)
 
   cauterize_dot_h <- getDataFileName "support/lib/cauterize.h"
   cauterize_dot_c <- getDataFileName "support/lib/cauterize.c"
@@ -97,6 +92,5 @@ render spec path = do
   copyFile makefile (path `combine` "Makefile")
   copyFile socket99_h (path `combine` "socket99.h")
   copyFile socket99_c (path `combine` "socket99.c")
-
-renderAiFiles :: Sp.Spec -> AI.Ai -> FilePath -> IO ()
-renderAiFiles _ _ _ = return ()
+  where
+    ti = mkTemplateInfo spec ai

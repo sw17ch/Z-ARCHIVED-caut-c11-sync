@@ -1,6 +1,6 @@
+{{#specInfo}}
 #include "{{cLibName}}.h"
 
-{{#specInfo}}
 hashtype_t const SCHEMA_HASH_{{cLibName}} = 
   { {{cLibHashStr}} };
 
