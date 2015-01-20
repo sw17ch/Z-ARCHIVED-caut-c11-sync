@@ -1,4 +1,3 @@
-{{#specInfo}}
 #ifndef _CAUTERIZE_C11SYNC_{{cLibName}}_
 #define _CAUTERIZE_C11SYNC_{{cLibName}}_
 
@@ -171,4 +170,3 @@ enum caut_ord order_{{ctName}}({{ctdDecl}} const * const _c_a, {{ctdDecl}} const
 {{/cLibTypes}}
 
 #endif /* _CAUTERIZE_C11SYNC_{{cLibName}}_ */
-{{/specInfo}}

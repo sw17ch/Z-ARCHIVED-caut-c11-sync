@@ -18,7 +18,7 @@ import Paths_c11sync
 
 data Caut2C11Opts = Caut2C11Opts
   { inputFile :: String
-  , aiInputFile :: String
+  , aiInputFile :: Maybe String
   , outputDirectory :: String
   } deriving (Show)
 
@@ -29,7 +29,7 @@ optParser = Caut2C11Opts
    <> metavar "FILE_PATH"
    <> help "Input Cauterize specification file."
     )
-  <*> strOption
+  <*> (\m -> nullOption $ reader (\v -> return . Just $ v) `mappend` m)
     ( long "ai-input"
    <> metavar "AI_FILE_PATH"
    <> help "Input Agnostic Interface specification file."
@@ -58,40 +58,60 @@ caut2c11 opts = do
   de <- doesDirectoryExist out
   if fe || de
     then error $ out ++ " already exists."
-    else go $ inputFile opts
+    else go
   where
     out = outputDirectory opts
-    go inFile = do
+
+    loadSpec :: IO Sp.Spec
+    loadSpec = do
+      let inFile = inputFile opts
       s <- Sp.parseFile inFile
       case s of
-        Left e -> print e
-        Right s' -> do
-          createDirectory out
-          p <- AI.parseFile (aiInputFile opts)
-          case p of
-            Left e -> print e
-            Right ai -> render s' ai out
+        Left e -> error $ show e
+        Right s' -> return s'
 
-render :: Sp.Spec -> AI.Ai -> String -> IO ()
+    loadAi :: IO (Maybe AI.Ai)
+    loadAi = do
+      let inFile = aiInputFile opts
+      case inFile of
+        Nothing -> return Nothing
+        Just a -> do p <- AI.parseFile a
+                     case p of
+                       Left e -> error $ show e
+                       Right a' -> return $ Just a'
+
+
+    go = do
+      createDirectory out
+      s <- loadSpec
+      a <- loadAi
+
+      render s a out
+
+render :: Sp.Spec -> Maybe AI.Ai -> String -> IO ()
 render spec ai path = do
-  renderHFile ti >>= T.writeFile (path `combine` hFileName spec)
-  renderCFile ti >>= T.writeFile (path `combine` cFileName spec)
-  renderAIHFile ti >>= T.writeFile (path `combine` aihFileName spec)
-  renderAICFile ti >>= T.writeFile (path `combine` aicFileName spec)
-  renderAssertions ti >>= T.writeFile (path `combine` assertionsFileName spec)
-
-  cauterize_dot_h <- getDataFileName "support/lib/cauterize.h"
-  cauterize_dot_c <- getDataFileName "support/lib/cauterize.c"
-  greatest_dot_h <- getDataFileName "support/greatest.h"
-  socket99_h <- getDataFileName "support/socket99.h"
-  socket99_c <- getDataFileName "support/socket99.c"
-  makefile <- getDataFileName "support/Makefile"
-
-  copyFile cauterize_dot_h (path `combine` "cauterize.h")
-  copyFile cauterize_dot_c (path `combine` "cauterize.c")
-  copyFile greatest_dot_h (path `combine` "greatest.h")
-  copyFile makefile (path `combine` "Makefile")
-  copyFile socket99_h (path `combine` "socket99.h")
-  copyFile socket99_c (path `combine` "socket99.c")
+  copyFiles
+  renderFiles
+  maybe (return ()) renderAIFiles ai
   where
-    ti = mkTemplateInfo spec ai
+    renderAIFiles ai' = do
+      renderAIHFile spec ai' >>= T.writeFile (path `combine` aihFileName spec)
+      renderAICFile spec ai' >>= T.writeFile (path `combine` aicFileName spec)
+      renderAssertions spec ai' >>= T.writeFile (path `combine` assertionsFileName spec)
+      renderMakefile spec ai' >>= T.writeFile (path `combine` makefileName)
+
+    renderFiles = do
+      renderHFile spec >>= T.writeFile (path `combine` hFileName spec)
+      renderCFile spec >>= T.writeFile (path `combine` cFileName spec)
+
+    copyFiles = do
+      cauterize_dot_h <- getDataFileName "support/lib/cauterize.h"
+      cauterize_dot_c <- getDataFileName "support/lib/cauterize.c"
+      greatest_dot_h <- getDataFileName "support/greatest.h"
+      socket99_h <- getDataFileName "support/socket99.h"
+      socket99_c <- getDataFileName "support/socket99.c"
+      copyFile cauterize_dot_h (path `combine` "cauterize.h")
+      copyFile cauterize_dot_c (path `combine` "cauterize.c")
+      copyFile greatest_dot_h (path `combine` "greatest.h")
+      copyFile socket99_h (path `combine` "socket99.h")
+      copyFile socket99_c (path `combine` "socket99.c")

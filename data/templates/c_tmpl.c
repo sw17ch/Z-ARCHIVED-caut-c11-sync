@@ -1,4 +1,3 @@
-{{#specInfo}}
 #include "{{cLibName}}.h"
 
 hashtype_t const SCHEMA_HASH_{{cLibName}} = 
@@ -14,4 +13,3 @@ hashtype_t const TYPE_HASH_{{cLibName}}_{{ctName}} =
 {{> c.packed_size_tmpl.c}}
 {{> c.init_tmpl.c}}
 {{> c.order_tmpl.c}}
-{{/specInfo}}
