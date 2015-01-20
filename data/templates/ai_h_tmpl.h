@@ -28,8 +28,8 @@ struct {{cLibName}}_ai_header {
   {{cLibName}}_ai_tag_t tag;
 };
 
-struct libayy_ai {
-  enum libayy_ai_tag {
+struct {{cLibName}}_ai {
+  enum {{cLibName}}_ai_tag {
 {{#cLibTypes}}
 {{#ctDetails}}
     {{cLibName}}_ai_tag_{{ctName}},

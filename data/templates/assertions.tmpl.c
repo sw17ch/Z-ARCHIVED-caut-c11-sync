@@ -53,10 +53,10 @@ int main(int argc, char * argv[]) {
 
   ai_hy = malloc(sizeof(*ai_hy));
   ai_y = malloc(sizeof(*ai_y));
-  ai_buffer = calloc(1,MESSAGE_MAX_SIZE_libayy_ai);
+  ai_buffer = calloc(1, MESSAGE_MAX_SIZE_{{cLibName}}_ai);
 
   GREATEST_MAIN_BEGIN();
-  RUN_SUITE(libayy_suite);
+  RUN_SUITE({{cLibName}}_suite);
   GREATEST_MAIN_END();
 
   free(ai_x);
