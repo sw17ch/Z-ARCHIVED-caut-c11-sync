@@ -4,6 +4,7 @@ module Cauterize.C11Files
   , renderCFile
   , renderAIHFile
   , renderAICFile
+  , renderAssertions
 
   , mkTemplateInfo
   ) where
@@ -39,6 +40,9 @@ renderAIHFile ti = renderFile ti "templates/ai_h_tmpl.h"
 
 renderAICFile :: TemplateInfo -> IO Text
 renderAICFile ti = renderFile ti "templates/ai_c_tmpl.c"
+
+renderAssertions :: TemplateInfo -> IO Text
+renderAssertions ti = renderFile ti "templates/assertions.tmpl.c"
 
 mkTemplateInfo :: Sp.Spec -> AI.Ai -> TemplateInfo
 mkTemplateInfo sp ai = TemplateInfo { aiInfo = cAi, specInfo = cSpec }

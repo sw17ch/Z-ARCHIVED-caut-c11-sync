@@ -1,3 +1,4 @@
+{{#specInfo}}
 #ifndef _CAUTERIZE_C11SYNC_{{cLibName}}_
 #define _CAUTERIZE_C11SYNC_{{cLibName}}_
 
@@ -7,7 +8,6 @@
 
 #include "cauterize.h"
 
-{{#specInfo}}
 #define NAME_{{cLibName}} "{{cLibName}}"
 #define VERSION_{{cLibName}} "{{cLibVersion}}"
 #define MIN_SIZE_{{cLibName}} ({{cLibMinSize}})

@@ -4,6 +4,7 @@ module Cauterize.FileNames
   , cFileName
   , aihFileName
   , aicFileName
+  , assertionsFileName
   ) where
 
 import qualified Cauterize.Specification as Sp
@@ -21,3 +22,7 @@ aihFileName s = unpack (libName s) ++ "_ai.h"
 
 aicFileName :: Sp.Spec -> FilePath
 aicFileName s = unpack (libName s) ++ "_ai.c"
+
+assertionsFileName :: Sp.Spec -> FilePath
+assertionsFileName s = unpack (libName s) ++ "_assertions.c"
+

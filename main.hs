@@ -78,6 +78,7 @@ render spec ai path = do
   renderCFile ti >>= T.writeFile (path `combine` cFileName spec)
   renderAIHFile ti >>= T.writeFile (path `combine` aihFileName spec)
   renderAICFile ti >>= T.writeFile (path `combine` aicFileName spec)
+  renderAssertions ti >>= T.writeFile (path `combine` assertionsFileName spec)
 
   cauterize_dot_h <- getDataFileName "support/lib/cauterize.h"
   cauterize_dot_c <- getDataFileName "support/lib/cauterize.c"
