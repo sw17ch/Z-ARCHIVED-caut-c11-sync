@@ -1,5 +1,5 @@
 {-# LANGUAGE OverloadedStrings #-}
-module Main where
+module Main (main) where
 
 import Options.Applicative
 
@@ -13,7 +13,7 @@ import System.Directory
 
 import Data.Text.Lazy.IO as T
 
-import Paths_c11sync
+import Paths_caut_c11_sync
 
 data Caut2C11Opts = Caut2C11Opts
   { specFile :: FilePath

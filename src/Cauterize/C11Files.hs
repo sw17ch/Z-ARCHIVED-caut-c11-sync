@@ -25,7 +25,7 @@ import Data.Data
 import Data.Text.Lazy as T
 import Data.Text.Lazy.IO as T
 
-import Paths_c11sync
+import Paths_caut_c11_sync
 
 data MetaInfo =
   MetaInfo { metaInfo :: CMeta
