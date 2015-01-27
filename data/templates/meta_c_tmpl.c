@@ -1,6 +1,6 @@
 {{#specInfo}}
-{{#aiInfo}}
-#include "{{cLibName}}_ai.h"
+{{#metaInfo}}
+#include "{{cLibName}}_meta.h"
 #include <string.h>
 
 #define CHECKED_PACK(TYPE_NAME) \
@@ -22,18 +22,18 @@
 #define CHECKED_UNPACK(TYPE_NAME) \
   do { \
     if (0 == memcmp(_header->tag, TYPE_TAG_##TYPE_NAME, sizeof(_header->tag))) { \
-      _obj->_tag = {{cLibName}}_ai_tag_##TYPE_NAME; \
+      _obj->_tag = {{cLibName}}_meta_tag_##TYPE_NAME; \
       STATUS_CHECK(unpack_##TYPE_NAME(_iter, &_obj->msg_##TYPE_NAME)); \
       return caut_status_ok; \
     } \
   } while(0)
 
-{{#aiTypes}}
-{{cLibName}}_ai_tag_t const TYPE_TAG_{{caiTypeName}} = { {{caiPrefix}} };
-{{/aiTypes}}
+{{#metaTypes}}
+{{cLibName}}_meta_tag_t const TYPE_TAG_{{cMetaTypeName}} = { {{cMetaPrefix}} };
+{{/metaTypes}}
 
-enum caut_status pack_{{cLibName}}_ai(struct caut_pack_iter * const _iter, struct {{cLibName}}_ai const * const _obj) {
-  {{aiDataLengthDecl}} _encode_len = 0;
+enum caut_status pack_{{cLibName}}_meta(struct caut_pack_iter * const _iter, struct {{cLibName}}_meta const * const _obj) {
+  {{metaDataLengthDecl}} _encode_len = 0;
   size_t _data_position = 0;
   void * _len_pointer = NULL;
 
@@ -41,12 +41,12 @@ enum caut_status pack_{{cLibName}}_ai(struct caut_pack_iter * const _iter, struc
   _len_pointer = &_iter->buffer[_iter->position];
 
   /* Dummy pack the length so that we know that the length *CAN* be stored. */
-  STATUS_CHECK(__caut_pack_{{aiDataLengthBuiltInRepr}}(_iter, &_encode_len));
+  STATUS_CHECK(__caut_pack_{{metaDataLengthBuiltInRepr}}(_iter, &_encode_len));
 
   switch(_obj->_tag) {
 {{#cLibTypes}}
 {{#ctDetails}}
-  case {{cLibName}}_ai_tag_{{ctName}}: CHECKED_PACK({{ctName}}); break;
+  case {{cLibName}}_meta_tag_{{ctName}}: CHECKED_PACK({{ctName}}); break;
 {{/ctDetails}}
 {{/cLibTypes}}
   default:
@@ -56,8 +56,8 @@ enum caut_status pack_{{cLibName}}_ai(struct caut_pack_iter * const _iter, struc
   return caut_status_ok;
 }
 
-enum caut_status unpack_header_{{cLibName}}_ai(struct caut_unpack_iter * _iter, struct {{cLibName}}_ai_header * _header) {
-  STATUS_CHECK(__caut_unpack_{{aiDataLengthBuiltInRepr}}(_iter, &_header->length));
+enum caut_status unpack_header_{{cLibName}}_meta(struct caut_unpack_iter * _iter, struct {{cLibName}}_meta_header * _header) {
+  STATUS_CHECK(__caut_unpack_{{metaDataLengthBuiltInRepr}}(_iter, &_header->length));
 
   for (size_t _i = 0; _i < sizeof(_header->tag); _i++) {
     STATUS_CHECK(__caut_unpack_u8(_iter, &_header->tag[_i]));
@@ -66,7 +66,7 @@ enum caut_status unpack_header_{{cLibName}}_ai(struct caut_unpack_iter * _iter, 
   return caut_status_ok;
 }
 
-enum caut_status unpack_{{cLibName}}_ai(struct caut_unpack_iter * const _iter, struct {{cLibName}}_ai_header * _header, struct {{cLibName}}_ai * const _obj) {
+enum caut_status unpack_{{cLibName}}_meta(struct caut_unpack_iter * const _iter, struct {{cLibName}}_meta_header * _header, struct {{cLibName}}_meta * const _obj) {
 {{#cLibTypes}}
 {{#ctDetails}}
   CHECKED_UNPACK({{ctName}});
@@ -76,5 +76,5 @@ enum caut_status unpack_{{cLibName}}_ai(struct caut_unpack_iter * const _iter, s
   return caut_status_invalid_tag;
 }
 
-{{/aiInfo}}
+{{/metaInfo}}
 {{/specInfo}}

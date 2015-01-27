@@ -41,9 +41,9 @@ data-files: templates/c.init/*.c,
             templates/c.unpack/*.c,
             templates/c.unpack_tmpl.c,
 
-            templates/ai_assertions.tmpl.c,
-            templates/ai_c_tmpl.c,
-            templates/ai_h_tmpl.h,
+            templates/meta_assertions.tmpl.c,
+            templates/meta_c_tmpl.c,
+            templates/meta_h_tmpl.h,
             templates/c_tmpl.c,
             templates/h_tmpl.h,
             templates/Makefile.tmpl
@@ -55,6 +55,7 @@ library
   build-depends:       base >=4.7 && <4.8,
                        cauterize >= 0.1.0.0,
                        containers,
+                       directory,
                        text >= 1.2.0.4,
                        -- something changed between 0.6.0 and 0.6.1 that
                        -- causes something to emit the following error:
@@ -77,8 +78,6 @@ executable c11-gen
   hs-source-dirs:      gen
   main-is:             Main.hs
   ghc-options:         -Wall -O2
-  -- other-modules:       
-  -- other-extensions:    
   build-depends:       base >=4.7 && <4.8,
                        cauterize >= 0.1.0.0,
                        c11sync,
@@ -86,5 +85,17 @@ executable c11-gen
                        directory,
                        filepath,
                        text
-  -- hs-source-dirs:      
+  default-language:    Haskell2010
+
+executable c11-meta-gen
+  hs-source-dirs:      meta-gen
+  main-is:             Main.hs
+  ghc-options:         -Wall -O2
+  build-depends:       base >=4.7 && <4.8,
+                       cauterize >= 0.1.0.0,
+                       c11sync,
+                       optparse-applicative,
+                       directory,
+                       filepath,
+                       text
   default-language:    Haskell2010

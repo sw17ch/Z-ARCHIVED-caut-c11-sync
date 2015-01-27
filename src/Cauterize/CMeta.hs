@@ -26,10 +26,10 @@ data CMeta = CMeta
   } deriving (Data, Typeable, Show)
 
 data CMetaType = CMetaType
-  { caiTypeName :: Text
-  , caiPrefix :: Text
+  { cMetaTypeName :: Text
+  , cMetaPrefix :: Text
   } deriving (Data, Typeable, Show)
 
 mkCMetaType :: M.MetaType -> CMetaType
 mkCMetaType M.MetaType { M.metaTypeName = n, M.metaTypePrefix = p } =
-  CMetaType { caiTypeName = pack n, caiPrefix = bytesToCSV p }
+  CMetaType { cMetaTypeName = pack n, cMetaPrefix = bytesToCSV p }

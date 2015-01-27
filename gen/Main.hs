@@ -8,22 +8,22 @@ import qualified Cauterize.Specification as Sp
 import Cauterize.FileNames
 import Cauterize.C11Files
 
-import System.Directory
 import System.FilePath.Posix
+import System.Directory
 
 import Data.Text.Lazy.IO as T
 
 import Paths_c11sync
 
 data Caut2C11Opts = Caut2C11Opts
-  { inputFile :: String
-  , outputDirectory :: String
+  { specFile :: FilePath
+  , outputDirectory :: FilePath
   } deriving (Show)
 
 optParser :: Parser Caut2C11Opts
 optParser = Caut2C11Opts
   <$> strOption
-    ( long "input"
+    ( long "spec"
    <> metavar "FILE_PATH"
    <> help "Input Cauterize specification file."
     )
@@ -46,28 +46,19 @@ main :: IO ()
 main = runWithOptions caut2c11
 
 caut2c11 :: Caut2C11Opts -> IO ()
-caut2c11 opts = do
-  fe <- doesFileExist out
-  de <- doesDirectoryExist out
-  if fe || de
-    then error $ out ++ " already exists."
-    else go
+caut2c11 opts = createGuard out go
   where
     out = outputDirectory opts
 
     loadSpec :: IO Sp.Spec
     loadSpec = do
-      let inFile = inputFile opts
+      let inFile = specFile opts
       s <- Sp.parseFile inFile
       case s of
         Left e -> error $ show e
         Right s' -> return s'
 
-    go = do
-      createDirectory out
-      s <- loadSpec
-
-      render s out
+    go = loadSpec >>= flip render out
 
 render :: Sp.Spec -> String -> IO ()
 render spec path = do

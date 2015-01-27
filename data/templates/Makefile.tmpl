@@ -1,11 +1,11 @@
 {{#specInfo}}
-{{#aiInfo}}
+{{#metaInfo}}
 CC=clang
 CFLAGS=-O3 -Wall -Wextra -std=c11 -pedantic
 PROG=run_tests
 
-CFILES := cauterize.c {{cLibName}}.c {{cLibName}}_ai.c {{cLibName}}_assertions.c socket99.c
-HFILES := cauterize.h {{cLibName}}.h {{cLibName}}_ai.h socket99.h greatest.h
+CFILES := cauterize.c {{cLibName}}.c {{cLibName}}_meta.c {{cLibName}}_assertions.c socket99.c
+HFILES := cauterize.h {{cLibName}}.h {{cLibName}}_meta.h socket99.h greatest.h
 
 all: $(PROG)
 clean:
@@ -13,5 +13,5 @@ clean:
 
 $(PROG): $(HFILES) $(CFILES)
 	$(CC) $(CFLAGS) $(CFILES) -o $@
-{{/aiInfo}}
+{{/metaInfo}}
 {{/specInfo}}

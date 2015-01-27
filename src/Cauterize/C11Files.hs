@@ -6,6 +6,8 @@ module Cauterize.C11Files
   , renderMetaCFile
   , renderAssertions
   , renderMakefile
+
+  , createGuard
   ) where
 
 import Text.Hastache
@@ -15,6 +17,8 @@ import qualified Cauterize.Specification as Sp
 import qualified Cauterize.Meta as M
 import Cauterize.CSpec
 import Cauterize.CMeta
+
+import System.Directory
 
 import Data.Data
 
@@ -35,13 +39,13 @@ renderCFile :: Sp.Spec -> IO Text
 renderCFile s = renderFile (mkCSpec s) "templates/c_tmpl.c"
 
 renderMetaHFile :: Sp.Spec -> M.Meta -> IO Text
-renderMetaHFile s a = renderMetaFile (mkCSpec s) (mkCMeta a) "templates/ai_h_tmpl.h"
+renderMetaHFile s a = renderMetaFile (mkCSpec s) (mkCMeta a) "templates/meta_h_tmpl.h"
 
 renderMetaCFile :: Sp.Spec -> M.Meta -> IO Text
-renderMetaCFile s a = renderMetaFile (mkCSpec s) (mkCMeta a) "templates/ai_c_tmpl.c"
+renderMetaCFile s a = renderMetaFile (mkCSpec s) (mkCMeta a) "templates/meta_c_tmpl.c"
 
 renderAssertions :: Sp.Spec -> M.Meta -> IO Text
-renderAssertions s a = renderMetaFile (mkCSpec s) (mkCMeta a) "templates/ai_assertions.tmpl.c"
+renderAssertions s a = renderMetaFile (mkCSpec s) (mkCMeta a) "templates/meta_assertions.tmpl.c"
 
 renderMakefile :: Sp.Spec -> M.Meta -> IO Text
 renderMakefile s a = renderMetaFile (mkCSpec s) (mkCMeta a) "templates/Makefile.tmpl"
@@ -69,3 +73,14 @@ renderFile s p = do
         tpath <- getDataFileName "templates/"
         return $ defaultConfig { muEscapeFunc = id
                                , muTemplateFileDir = Just tpath } :: IO (MuConfig IO)
+
+createGuard :: FilePath -> IO () -> IO ()
+createGuard out go = do
+  fe <- doesFileExist out
+  de <- doesDirectoryExist out
+
+  if fe
+    then error $ "Error: " ++ out ++ " is a file."
+    else if de
+          then go
+          else createDirectory out >> go
