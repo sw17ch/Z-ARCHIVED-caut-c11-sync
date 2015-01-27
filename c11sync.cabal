@@ -16,28 +16,75 @@ build-type:          Simple
 cabal-version:       >=1.10
 
 data-dir:            data
-data-files:          support/greatest.h,
-                     support/lib/cauterize.c,
-                     support/lib/cauterize.h,
-                     support/run_tests.sh,
-                     support/test.c,
-                     support/test_iterators.c,
-                     support/test_serializers.c,
-                     support/Makefile
 
-executable c11sync
+-- Files that are just copied into the project.
+data-files: support/lib/cauterize.c,
+            support/lib/cauterize.h,
+            support/greatest.h,
+            support/run_tests.sh,
+            support/socket99.c,
+            support/socket99.h,
+            support/test.c,
+            support/test_client.templ.c,
+            support/test_iterators.c,
+            support/test_serializers.c
+
+-- Files that are used in templates that result in other files.
+data-files: templates/c.init/*.c,
+            templates/c.init_tmpl.c,
+            templates/c.order/*.c,
+            templates/c.order_tmpl.c,
+            templates/c.pack/*.c,
+            templates/c.pack_tmpl.c,
+            templates/c.packed_size/*.c,
+            templates/c.packed_size_tmpl.c,
+            templates/c.unpack/*.c,
+            templates/c.unpack_tmpl.c,
+
+            templates/ai_assertions.tmpl.c,
+            templates/ai_c_tmpl.c,
+            templates/ai_h_tmpl.h,
+            templates/c_tmpl.c,
+            templates/h_tmpl.h,
+            templates/Makefile.tmpl
+
+library
+  hs-source-dirs:      src
+  ghc-options:         -Wall -O2
+  default-language:    Haskell2010
+  build-depends:       base >=4.7 && <4.8,
+                       cauterize >= 0.1.0.0,
+                       containers,
+                       text >= 1.2.0.4,
+                       -- something changed between 0.6.0 and 0.6.1 that
+                       -- causes something to emit the following error:
+                       --   Data.Text.Lazy.Text.toConstr
+                       -- TODO: Figure out what changed, fix it, move to 0.6.1.
+                       hastache == 0.6.0
+  -- TODO: Move these modules to Cauterize.C11Sync.*
+  exposed-modules:     Cauterize.C11Files,
+                       Cauterize.CMeta,
+                       Cauterize.CSpec,
+                       Cauterize.FileNames,
+                       Cauterize.Format,
+
+                       -- export the cabal-generated file that exposes paths
+                       -- to our support/ directory.
+                       -- TODO: wrap this in Cauterize.C11Sync.Paths
+                       Paths_c11sync
+
+executable c11-gen
+  hs-source-dirs:      gen
   main-is:             Main.hs
   ghc-options:         -Wall -O2
   -- other-modules:       
   -- other-extensions:    
   build-depends:       base >=4.7 && <4.8,
+                       cauterize >= 0.1.0.0,
+                       c11sync,
                        optparse-applicative,
-                       containers,
                        directory,
                        filepath,
-                       text,
-                       hastache,
-                       cauterize-ai <=0.1.0.0,
-                       cauterize-core <=0.1.0.0
+                       text
   -- hs-source-dirs:      
   default-language:    Haskell2010

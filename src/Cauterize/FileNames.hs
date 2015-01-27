@@ -2,8 +2,8 @@
 module Cauterize.FileNames
   ( hFileName
   , cFileName
-  , aihFileName
-  , aicFileName
+  , metaHFileName
+  , metaCFileName
   , assertionsFileName
   , makefileName
   ) where
@@ -18,11 +18,11 @@ hFileName s = unpack (libName s) ++ ".h"
 cFileName :: Sp.Spec -> FilePath
 cFileName s = unpack (libName s) ++ ".c"
 
-aihFileName :: Sp.Spec -> FilePath
-aihFileName s = unpack (libName s) ++ "_ai.h"
+metaHFileName :: Sp.Spec -> FilePath
+metaHFileName s = unpack (libName s) ++ "_meta.h"
 
-aicFileName :: Sp.Spec -> FilePath
-aicFileName s = unpack (libName s) ++ "_ai.c"
+metaCFileName :: Sp.Spec -> FilePath
+metaCFileName s = unpack (libName s) ++ "_meta.c"
 
 assertionsFileName :: Sp.Spec -> FilePath
 assertionsFileName s = unpack (libName s) ++ "_assertions.c"
