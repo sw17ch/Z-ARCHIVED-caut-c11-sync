@@ -72,11 +72,5 @@ render spec path = do
     copyFiles = do
       cauterize_dot_h <- getDataFileName "support/lib/cauterize.h"
       cauterize_dot_c <- getDataFileName "support/lib/cauterize.c"
-      greatest_dot_h <- getDataFileName "support/greatest.h"
-      socket99_h <- getDataFileName "support/socket99.h"
-      socket99_c <- getDataFileName "support/socket99.c"
       copyFile cauterize_dot_h (path `combine` "cauterize.h")
       copyFile cauterize_dot_c (path `combine` "cauterize.c")
-      copyFile greatest_dot_h (path `combine` "greatest.h")
-      copyFile socket99_h (path `combine` "socket99.h")
-      copyFile socket99_c (path `combine` "socket99.c")

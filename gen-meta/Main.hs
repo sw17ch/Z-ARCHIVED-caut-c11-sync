@@ -10,8 +10,11 @@ import Cauterize.FileNames
 import Cauterize.C11Files
 
 import System.FilePath.Posix
+import System.Directory
 
 import Data.Text.Lazy.IO as T
+
+import Paths_caut_c11_sync
 
 data Caut2C11Opts = Caut2C11Opts
   { specFile :: String
@@ -74,7 +77,18 @@ caut2c11 opts = createGuard out $ do
 
 render :: Sp.Spec -> M.Meta -> String -> IO ()
 render spec meta path = do
-  renderMetaHFile spec meta >>= T.writeFile (path `combine` metaHFileName spec)
-  renderMetaCFile spec meta >>= T.writeFile (path `combine` metaCFileName spec)
-  renderAssertions spec meta >>= T.writeFile (path `combine` assertionsFileName spec)
-  renderMakefile spec meta >>= T.writeFile (path `combine` makefileName)
+  renderFiles
+  copyFiles
+  where
+    renderFiles = do
+      renderMetaHFile spec meta >>= T.writeFile (path `combine` metaHFileName spec)
+      renderMetaCFile spec meta >>= T.writeFile (path `combine` metaCFileName spec)
+      renderAssertions spec meta >>= T.writeFile (path `combine` assertionsFileName spec)
+      renderMakefile spec meta >>= T.writeFile (path `combine` makefileName)
+    copyFiles = do
+      greatest_dot_h <- getDataFileName "support/greatest.h"
+      socket99_h <- getDataFileName "support/socket99.h"
+      socket99_c <- getDataFileName "support/socket99.c"
+      copyFile greatest_dot_h (path `combine` "greatest.h")
+      copyFile socket99_h (path `combine` "socket99.h")
+      copyFile socket99_c (path `combine` "socket99.c")
