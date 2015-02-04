@@ -1,4 +1,4 @@
-{{#CSet}}
+{{#CCombination}}
 enum caut_ord order_{{ctName}}(struct {{ctName}} const * const _c_a, struct {{ctName}} const * const _c_b) {
 {{#ctdFields}}
 {{#CNamedRef}}
@@ -26,4 +26,4 @@ enum caut_ord order_{{ctName}}(struct {{ctName}} const * const _c_a, struct {{ct
 
   return caut_ord_eq;
 }
-{{/CSet}}
+{{/CCombination}}

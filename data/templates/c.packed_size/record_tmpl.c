@@ -1,7 +1,7 @@
-{{#CStruct}}
+{{#CRecord}}
 size_t packed_size_{{ctName}}(struct {{ctName}} const * const _c_obj) {
   size_t _c_size = 0;
-  
+
 {{#ctdFields}}
 {{#CNamedRef}}
   _c_size += packed_size_{{cnrRefName}}(&_c_obj->{{cnrName}});
@@ -12,7 +12,7 @@ size_t packed_size_{{ctName}}(struct {{ctName}} const * const _c_obj) {
     break;
 {{/CNamedEmpty}}
 {{/ctdFields}}
-  
+
   return _c_size;
 }
-{{/CStruct}}
+{{/CRecord}}

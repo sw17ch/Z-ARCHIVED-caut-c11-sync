@@ -1,4 +1,4 @@
-{{#CStruct}}
+{{#CRecord}}
 enum caut_status pack_{{ctName}}(struct caut_pack_iter * const _c_iter, struct {{ctName}} const * const _c_obj) {
 {{#ctdFields}}
 {{#CNamedRef}}
@@ -11,4 +11,4 @@ enum caut_status pack_{{ctName}}(struct caut_pack_iter * const _c_iter, struct {
   
   return caut_status_ok;
 }
-{{/CStruct}}
+{{/CRecord}}

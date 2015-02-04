@@ -1,4 +1,4 @@
-{{#CEnum}}
+{{#CUnion}}
 enum caut_ord order_{{ctName}}(struct {{ctName}} const * const _c_a, struct {{ctName}} const * const _c_b) {
   enum caut_ord _c_o = CAUT_ORDER(_c_a->_tag, _c_b->_tag);
   
@@ -26,4 +26,4 @@ enum caut_ord order_{{ctName}}(struct {{ctName}} const * const _c_a, struct {{ct
   
   return caut_ord_eq;
 }
-{{/CEnum}}
+{{/CUnion}}

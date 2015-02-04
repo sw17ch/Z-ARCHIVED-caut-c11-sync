@@ -18,6 +18,7 @@ import Data.Text.Lazy as T
 import Data.Word
 import Numeric
 
+-- TODO: This isn't necessary any more. Library names have a stricter parsing rule.
 libName :: Sp.Spec -> Text
 libName s = "lib" `append` replace " " "_" (pack $ Sp.specName s)
 
@@ -50,9 +51,12 @@ builtInToStdType Sp.BIs8       = "int8_t"
 builtInToStdType Sp.BIs16      = "int16_t"
 builtInToStdType Sp.BIs32      = "int32_t"
 builtInToStdType Sp.BIs64      = "int64_t"
-builtInToStdType Sp.BIieee754s = "float"
-builtInToStdType Sp.BIieee754d = "double"
+builtInToStdType Sp.BIf32      = "float"
+builtInToStdType Sp.BIf64      = "double"
 builtInToStdType Sp.BIbool     = "bool"
+builtInToStdType Sp.BIcu8      = "uint8_t"
+builtInToStdType Sp.BIcu16     = "uint16_t"
+builtInToStdType Sp.BIcu32     = "uint32_t"
 
 unsignedAsLengthInBytes :: Integer -> Text
 unsignedAsLengthInBytes 1 = "uint8_t"

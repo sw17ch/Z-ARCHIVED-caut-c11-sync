@@ -1,6 +1,6 @@
-{{#CSet}}
+{{#CCombination}}
 enum caut_status unpack_{{ctName}}(struct caut_unpack_iter * const _c_iter, struct {{ctName}} * const _c_obj) {
-  STATUS_CHECK(unpack_{{ctdSetFlagsReprName}}(_c_iter, &_c_obj->_flags));
+  STATUS_CHECK(unpack_{{ctdCombinationFlagsReprName}}(_c_iter, &_c_obj->_flags));
 
 {{#ctdFields}}
 {{#CNamedRef}}
@@ -16,4 +16,4 @@ enum caut_status unpack_{{ctName}}(struct caut_unpack_iter * const _c_iter, stru
   return caut_status_ok;
 }
 
-{{/CSet}}
+{{/CCombination}}

@@ -1,4 +1,4 @@
-{{#CStruct}}
+{{#CRecord}}
 enum caut_ord order_{{ctName}}(struct {{ctName}} const * const _c_a, struct {{ctName}} const * const _c_b) {
   enum caut_ord _c_o;
 {{#ctdFields}}
@@ -13,4 +13,4 @@ enum caut_ord order_{{ctName}}(struct {{ctName}} const * const _c_a, struct {{ct
 {{/ctdFields}}
   return caut_ord_eq;
 }
-{{/CStruct}}
+{{/CRecord}}

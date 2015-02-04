@@ -122,8 +122,12 @@ GENERIC_PACK(u16, uint16_t)
 GENERIC_PACK(u32, uint32_t)
 GENERIC_PACK(u64, uint64_t)
 
-GENERIC_PACK(ieee754s, float)
-GENERIC_PACK(ieee754d, double)
+GENERIC_PACK(cu8,  uint8_t)
+GENERIC_PACK(cu16, uint16_t)
+GENERIC_PACK(cu32, uint32_t)
+
+GENERIC_PACK(f32, float)
+GENERIC_PACK(f64, double)
 
 enum caut_status __caut_pack_bool(P * const iter, bool const * const obj) {
   CAUT_ASSERT(iter);
@@ -142,8 +146,12 @@ GENERIC_UNPACK(u16, uint16_t)
 GENERIC_UNPACK(u32, uint32_t)
 GENERIC_UNPACK(u64, uint64_t)
 
-GENERIC_UNPACK(ieee754s, float)
-GENERIC_UNPACK(ieee754d, double)
+GENERIC_UNPACK(cu8,  uint8_t)
+GENERIC_UNPACK(cu16, uint16_t)
+GENERIC_UNPACK(cu32, uint32_t)
+
+GENERIC_UNPACK(f32, float)
+GENERIC_UNPACK(f64, double)
 
 enum caut_status __caut_unpack_bool(U * const iter, bool * const obj) {
   CAUT_ASSERT(iter);

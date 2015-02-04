@@ -1,6 +1,6 @@
-{{#CEnum}}
+{{#CUnion}}
 enum caut_status pack_{{ctName}}(struct caut_pack_iter * const _c_iter, struct {{ctName}} const * const _c_obj) {
-  STATUS_CHECK(pack_{{ctdEnumTagReprName}}(_c_iter, &_c_obj->_tag));
+  STATUS_CHECK(pack_{{ctdUnionTagReprName}}(_c_iter, &_c_obj->_tag));
   
   switch(_c_obj->_tag) {
 {{#ctdFields}}
@@ -21,4 +21,4 @@ enum caut_status pack_{{ctName}}(struct caut_pack_iter * const _c_iter, struct {
   
   return caut_status_ok;
 }
-{{/CEnum}}
+{{/CUnion}}

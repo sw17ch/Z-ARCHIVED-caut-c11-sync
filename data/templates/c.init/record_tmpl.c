@@ -1,4 +1,4 @@
-{{#CStruct}}
+{{#CRecord}}
 void init_{{ctName}}(struct {{ctName}} * _c_obj) {
 {{#ctdFields}}
 {{#CNamedRef}}
@@ -9,4 +9,4 @@ void init_{{ctName}}(struct {{ctName}} * _c_obj) {
 {{/CNamedEmpty}}
 {{/ctdFields}}
 }
-{{/CStruct}}
+{{/CRecord}}

@@ -31,18 +31,16 @@ data CType = CType { ctName :: Text -- ^ The name of the type suitable for C nam
                    }
   deriving (Data, Typeable, Show)
 
-data CTypeDetails = CBuiltIn { ctdDecl :: Text, needTypeDef :: Bool }
-                  | CConst   { ctdDecl :: Text, ctdReprName :: Text, ctdReprDecl :: Text, ctdConstVal :: Integer }
-                  | CArray   { ctdDecl :: Text, ctdReprName :: Text, ctdReprDecl :: Text, ctdArrayLen :: Integer }
-                  | CVector  { ctdDecl :: Text, ctdReprName :: Text, ctdReprDecl :: Text, ctdVectorMaxLen :: Integer, ctdVectorMaxLenReprName :: Text, ctdVectorMaxLenReprDecl :: Text }
-                  | CScalar  { ctdDecl :: Text, ctdReprName :: Text, ctdReprDecl :: Text }
-                  | CStruct  { ctdDecl :: Text, ctdFields :: [CNamedField] }
-                  -- TODO: ctdEnumTagReprDecl should not be a repr decl. It
+data CTypeDetails = CBuiltIn     { ctdDecl :: Text, needTypeDef :: Bool }
+                  | CArray       { ctdDecl :: Text, ctdReprName :: Text, ctdReprDecl :: Text, ctdArrayLen :: Integer }
+                  | CVector      { ctdDecl :: Text, ctdReprName :: Text, ctdReprDecl :: Text, ctdVectorMaxLen :: Integer, ctdVectorMaxLenReprName :: Text, ctdVectorMaxLenReprDecl :: Text }
+                  | CSynonym     { ctdDecl :: Text, ctdReprName :: Text, ctdReprDecl :: Text }
+                  | CRecord      { ctdDecl :: Text, ctdFields :: [CNamedField] }
+                  -- TODO: ctdRecordTagReprDecl should not be a repr decl. It
                   -- just happens to be. It should probably just be the
                   -- reprName.
-                  | CEnum    { ctdDecl :: Text, ctdFields :: [CNamedField], ctdHasData :: Bool, ctdEnumTagReprName :: Text, ctdEnumTagReprDecl :: Text }
-                  | CSet     { ctdDecl :: Text, ctdFields :: [CNamedField], ctdSetFlagsReprName :: Text, ctdSetFlagsReprDecl :: Text }
-                  | CPad     { ctdDecl :: Text, ctdPadLen :: Integer }
+                  | CUnion       { ctdDecl :: Text, ctdFields :: [CNamedField], ctdHasData :: Bool, ctdUnionTagReprName :: Text, ctdUnionTagReprDecl :: Text }
+                  | CCombination { ctdDecl :: Text, ctdFields :: [CNamedField], ctdCombinationFlagsReprName :: Text, ctdCombinationFlagsReprDecl :: Text }
   deriving (Data, Typeable, Show)
 
 {- | Named Fields are used to indicate the structure of fields in Enumerations,
@@ -99,10 +97,8 @@ mkCTypeDetails nameToDecl' t =
       case b of
         Sp.BIbool -> CBuiltIn { ctdDecl = builtInToStdType b, needTypeDef = False }
         _ -> CBuiltIn { ctdDecl = builtInToStdType b, needTypeDef = True }
-    Sp.Scalar { Sp.unScalar = Sp.TScalar { Sp.scalarRepr = r } } ->
-      CScalar { ctdDecl = d, ctdReprName = pack . show $ r, ctdReprDecl = builtInToStdType r }
-    Sp.Const { Sp.unConst = Sp.TConst { Sp.constRepr = r, Sp.constValue = v } } ->
-      CConst { ctdDecl = d, ctdReprName = pack . show $ r, ctdReprDecl = builtInToStdType r , ctdConstVal  = v }
+    Sp.Synonym { Sp.unSynonym = Sp.TSynonym { Sp.synonymRepr = r } } ->
+      CSynonym { ctdDecl = d, ctdReprName = pack . show $ r, ctdReprDecl = builtInToStdType r }
     Sp.Array { Sp.unFixed = Sp.TArray { Sp.arrayRef = r, Sp.arrayLen = l } } ->
       CArray { ctdDecl = d, ctdReprName = pack r, ctdReprDecl = nameToDecl r , ctdArrayLen = l }
     Sp.Vector { Sp.unBounded = Sp.TVector { Sp.vectorRef = r, Sp.vectorMaxLen = l } , Sp.lenRepr = Sp.LengthRepr lr } ->
@@ -113,26 +109,24 @@ mkCTypeDetails nameToDecl' t =
               , ctdVectorMaxLenReprName = pack . show $ lr
               , ctdVectorMaxLenReprDecl = builtInToStdType lr
               }
-    Sp.Struct { Sp.unStruct = Sp.TStruct { Sp.structFields = Sp.Fields fs } } ->
+    Sp.Record { Sp.unRecord = Sp.TRecord { Sp.recordFields = Sp.Fields fs } } ->
       let fs' = P.map mkNamedRef' fs
-      in CStruct { ctdDecl = d, ctdFields = fs' }
-    Sp.Set { Sp.unSet = Sp.TSet { Sp.setFields = Sp.Fields fs } , Sp.flagsRepr = Sp.FlagsRepr r } ->
+      in CRecord { ctdDecl = d, ctdFields = fs' }
+    Sp.Combination { Sp.unCombination = Sp.TCombination { Sp.combinationFields = Sp.Fields fs } , Sp.flagsRepr = Sp.FlagsRepr r } ->
       let fs' = P.map mkNamedRef' fs
-      in CSet { ctdDecl = d
-              , ctdFields = fs'
-              , ctdSetFlagsReprName = pack . show $ r
-              , ctdSetFlagsReprDecl = builtInToStdType r
-              }
-    Sp.Enum { Sp.unEnum = Sp.TEnum { Sp.enumFields = Sp.Fields fs } , Sp.tagRepr = Sp.TagRepr r } ->
+      in CCombination { ctdDecl = d
+                      , ctdFields = fs'
+                      , ctdCombinationFlagsReprName = pack . show $ r
+                      , ctdCombinationFlagsReprDecl = builtInToStdType r
+                      }
+    Sp.Union { Sp.unUnion = Sp.TUnion { Sp.unionFields = Sp.Fields fs } , Sp.tagRepr = Sp.TagRepr r } ->
       let fs' = P.map mkNamedRef' fs
-      in CEnum { ctdDecl = d
-               , ctdFields = fs'
-               , ctdEnumTagReprName = pack . show $ r
-               , ctdEnumTagReprDecl = builtInToStdType r
-               , ctdHasData = hasData fs'
-               }
-    Sp.Pad { Sp.unPad = Sp.TPad { Sp.padLength = l } } ->
-      CPad { ctdDecl = d, ctdPadLen = l }
+      in CUnion { ctdDecl = d
+                , ctdFields = fs'
+                , ctdUnionTagReprName = pack . show $ r
+                , ctdUnionTagReprDecl = builtInToStdType r
+                , ctdHasData = hasData fs'
+                }
   where
     mkNamedRef' = mkNamedRef nameToDecl'
     d = mkDecl t
@@ -155,13 +149,11 @@ mkNamedRef _ Sp.EmptyField { Sp.fName = n, Sp.fIndex = i } =
 mkDecl :: Sp.SpType -> Text
 mkDecl t@(Sp.Array {}) = typeAsStruct t
 mkDecl t@(Sp.Vector {}) = typeAsStruct t
-mkDecl t@(Sp.Struct {}) = typeAsStruct t
-mkDecl t@(Sp.Set {}) = typeAsStruct t
-mkDecl t@(Sp.Enum {}) = typeAsStruct t
-mkDecl t@(Sp.Pad {}) = typeAsStruct t
+mkDecl t@(Sp.Record {}) = typeAsStruct t
+mkDecl t@(Sp.Combination {}) = typeAsStruct t
+mkDecl t@(Sp.Union {}) = typeAsStruct t
 mkDecl t@(Sp.BuiltIn {}) = typeToName t
-mkDecl t@(Sp.Scalar {}) = typeToName t
-mkDecl t@(Sp.Const {}) = typeToName t
+mkDecl t@(Sp.Synonym {}) = typeToName t
 
 typeToName :: Sp.SpType -> Text
 typeToName t = pack $ Sp.typeName t

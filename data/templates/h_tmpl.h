@@ -35,9 +35,6 @@ extern hashtype_t const TYPE_HASH_{{cLibName}}_{{ctName}};
 {{#CVector}}
 #define CONST_{{cLibName}}_{{ctName}}_MAX_LENGTH ({{ctdVectorMaxLen}})
 {{/CVector}}
-{{#CConst}}
-#define CONST_{{cLibName}}_{{ctName}}_VALUE ({{ctdConstVal}})
-{{/CConst}}
 {{/ctDetails}}
 {{/cLibTypes}}
 
@@ -48,30 +45,24 @@ extern hashtype_t const TYPE_HASH_{{cLibName}}_{{ctName}};
 typedef {{ctdDecl}} {{ctName}};
 {{/needTypeDef}}
 {{/CBuiltIn}}
-{{#CConst}}
-typedef {{ctdReprDecl}} {{ctName}};
-{{/CConst}}
 {{#CArray}}
 struct {{ctName}};
 {{/CArray}}
 {{#CVector}}
 struct {{ctName}};
 {{/CVector}}
-{{#CScalar}}
+{{#CSynonym}}
 typedef {{ctdReprDecl}} {{ctName}};
-{{/CScalar}}
-{{#CStruct}}
+{{/CSynonym}}
+{{#CRecord}}
 struct {{ctName}};
-{{/CStruct}}
-{{#CEnum}}
+{{/CRecord}}
+{{#CUnion}}
 struct {{ctName}};
-{{/CEnum}}
-{{#CSet}}
+{{/CUnion}}
+{{#CCombination}}
 struct {{ctName}};
-{{/CSet}}
-{{#CPad}}
-struct {{ctName}};
-{{/CPad}}
+{{/CCombination}}
 {{/ctDetails}}{{/cLibTypes}}
 
 /* Function prototypes. */
@@ -102,7 +93,7 @@ enum caut_ord order_{{ctName}}({{ctdDecl}} const * const _c_a, {{ctdDecl}} const
 };
 
 {{/CVector}}
-{{#CStruct}}
+{{#CRecord}}
 {{ctdDecl}} {
 {{#ctdFields}}
 {{#CNamedRef}}
@@ -114,8 +105,8 @@ enum caut_ord order_{{ctName}}({{ctdDecl}} const * const _c_a, {{ctdDecl}} const
 {{/ctdFields}}
 };
 
-{{/CStruct}}
-{{#CEnum}}
+{{/CRecord}}
+{{#CUnion}}
 {{ctdDecl}} {
   enum {{ctName}}_tag {
 {{#ctdFields}}
@@ -128,7 +119,7 @@ enum caut_ord order_{{ctName}}({{ctdDecl}} const * const _c_a, {{ctdDecl}} const
 {{/ctdFields}}
   };
 
-  {{ctdEnumTagReprDecl}} _tag;
+  {{ctdUnionTagReprDecl}} _tag;
 {{#ctdHasData}}
 
   union {
@@ -144,10 +135,10 @@ enum caut_ord order_{{ctName}}({{ctdDecl}} const * const _c_a, {{ctdDecl}} const
 {{/ctdHasData}}
 };
 
-{{/CEnum}}
-{{#CSet}}
+{{/CUnion}}
+{{#CCombination}}
 {{ctdDecl}} {
-  {{ctdSetFlagsReprDecl}} _flags;
+  {{ctdCombinationFlagsReprDecl}} _flags;
 
 {{#ctdFields}}
 {{#CNamedRef}}
@@ -159,7 +150,7 @@ enum caut_ord order_{{ctName}}({{ctdDecl}} const * const _c_a, {{ctdDecl}} const
 {{/ctdFields}}
 };
 
-{{/CSet}}
+{{/CCombination}}
 {{#CPad}}
 {{ctdDecl}} {
   uint8_t pad[MAX_SIZE_{{cLibName}}_{{ctName}}];
