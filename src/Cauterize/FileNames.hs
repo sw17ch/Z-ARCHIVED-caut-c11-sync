@@ -5,6 +5,7 @@ module Cauterize.FileNames
   , metaHFileName
   , metaCFileName
   , assertionsFileName
+  , testClientName
   , makefileName
   ) where
 
@@ -24,8 +25,11 @@ metaHFileName s = unpack (libName s) ++ "_meta.h"
 metaCFileName :: Sp.Spec -> FilePath
 metaCFileName s = unpack (libName s) ++ "_meta.c"
 
-assertionsFileName :: Sp.Spec -> FilePath
-assertionsFileName s = unpack (libName s) ++ "_assertions.c"
+assertionsFileName :: FilePath
+assertionsFileName = "assertions.c"
+
+testClientName :: FilePath
+testClientName = "test_client.c"
 
 makefileName :: FilePath
 makefileName = "Makefile"

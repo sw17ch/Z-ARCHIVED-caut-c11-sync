@@ -5,6 +5,7 @@ module Cauterize.C11Files
   , renderMetaHFile
   , renderMetaCFile
   , renderAssertions
+  , renderTestClient
   , renderMakefile
 
   , createGuard
@@ -46,6 +47,9 @@ renderMetaCFile s a = renderMetaFile (mkCSpec s) (mkCMeta a) "templates/meta_c_t
 
 renderAssertions :: Sp.Spec -> M.Meta -> IO Text
 renderAssertions s a = renderMetaFile (mkCSpec s) (mkCMeta a) "templates/meta_assertions.tmpl.c"
+
+renderTestClient :: Sp.Spec -> M.Meta -> IO Text
+renderTestClient s a = renderMetaFile (mkCSpec s) (mkCMeta a) "templates/test_client.tmpl.c"
 
 renderMakefile :: Sp.Spec -> M.Meta -> IO Text
 renderMakefile s a = renderMetaFile (mkCSpec s) (mkCMeta a) "templates/Makefile.tmpl"

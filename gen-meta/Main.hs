@@ -83,7 +83,8 @@ render spec meta path = do
     renderFiles = do
       renderMetaHFile spec meta >>= T.writeFile (path `combine` metaHFileName spec)
       renderMetaCFile spec meta >>= T.writeFile (path `combine` metaCFileName spec)
-      renderAssertions spec meta >>= T.writeFile (path `combine` assertionsFileName spec)
+      renderAssertions spec meta >>= T.writeFile (path `combine` assertionsFileName)
+      renderTestClient spec meta >>= T.writeFile (path `combine` testClientName)
       renderMakefile spec meta >>= T.writeFile (path `combine` makefileName)
     copyFiles = do
       greatest_dot_h <- getDataFileName "support/greatest.h"

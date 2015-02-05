@@ -1,4 +1,6 @@
-#include "#{CAUTLIBNAME}_meta.h"
+{{#specInfo}}
+{{#metaInfo}}
+#include "{{cLibName}}_meta.h"
 #include "socket99.h"
 
 #include <unistd.h>
@@ -31,32 +33,32 @@ int main(int argc, char * argv[]) {
 }
 
 int run_client(int sock) {
-  struct #{CAUTLIBNAME}_meta_header * h = malloc(sizeof(*h));
-  struct #{CAUTLIBNAME}_meta * d = malloc(sizeof(*d));
-  void * buffer = malloc(MAX_SIZE_#{CAUTLIBNAME});
+  struct {{cLibName}}_meta_header * h = malloc(sizeof(*h));
+  struct {{cLibName}}_meta * d = malloc(sizeof(*d));
+  void * buffer = malloc(MAX_SIZE_{{cLibName}});
 
   struct caut_unpack_iter upack;
   struct caut_pack_iter pack;
 
-  write(sock, SCHEMA_HASH_#{CAUTLIBNAME}, sizeof(SCHEMA_HASH_#{CAUTLIBNAME}));
+  write(sock, SCHEMA_HASH_{{cLibName}}, sizeof(SCHEMA_HASH_{{cLibName}}));
 
   size_t rlen = 0;
 
   /* Read and decode header. */
-  if (!read_exactly(sock, buffer, MESSAGE_OVERHEAD_#{CAUTLIBNAME}_meta, &rlen)) { return -1; }
+  if (!read_exactly(sock, buffer, MESSAGE_OVERHEAD_{{cLibName}}_meta, &rlen)) { return -1; }
   caut_unpack_iter_init(&upack, buffer, rlen);
-  if (caut_status_ok != unpack_header_#{CAUTLIBNAME}_meta(&upack, h)) { return -2; }
+  if (caut_status_ok != unpack_header_{{cLibName}}_meta(&upack, h)) { return -2; }
 
   /* Read the remaining data as described by the header. */
   if (!read_exactly(sock, buffer, h->length, &rlen)) { return -3; }
   caut_unpack_iter_init(&upack, buffer, rlen);
-  if (caut_status_ok != unpack_#{CAUTLIBNAME}_meta(&upack, h, d)) { return -4; }
+  if (caut_status_ok != unpack_{{cLibName}}_meta(&upack, h, d)) { return -4; }
 
-  memset(buffer, 0, MAX_SIZE_#{CAUTLIBNAME});
+  memset(buffer, 0, MAX_SIZE_{{cLibName}});
 
-  caut_pack_iter_init(&pack, buffer, MAX_SIZE_#{CAUTLIBNAME});
+  caut_pack_iter_init(&pack, buffer, MAX_SIZE_{{cLibName}});
 
-  if (caut_status_ok != pack_#{CAUTLIBNAME}_meta(&pack, d)) { return -5; }
+  if (caut_status_ok != pack_{{cLibName}}_meta(&pack, d)) { return -5; }
 
   write(sock, buffer, pack.position);
 
@@ -98,3 +100,5 @@ bool read_exactly(int fd, void * buf, size_t nbyte, size_t * rbyte) {
 
   return (r == nbyte);
 }
+{{/metaInfo}}
+{{/specInfo}}
