@@ -18,20 +18,14 @@ cabal-version:       >=1.10
 data-dir:            data
 
 -- Files that are just copied into the project.
-data-files: support/lib/cauterize.c,
-            support/lib/cauterize.h,
-            support/greatest.h,
-            support/run_tests.sh,
-            support/socket99.c,
-            support/socket99.h,
-            support/test.c,
-            support/test_client.templ.c,
-            support/test_iterators.c,
-            support/test_serializers.c
+data-files: support/lib/*.c,
+            support/lib/*.h,
+            support/*.h,
+            support/*.sh,
+            support/*.c
 
 -- Files that are used in templates that result in other files.
 data-files: templates/c.init/*.c,
-            templates/c.init_tmpl.c,
             templates/c.order/*.c,
             templates/c.order_tmpl.c,
             templates/c.pack/*.c,
@@ -41,12 +35,9 @@ data-files: templates/c.init/*.c,
             templates/c.unpack/*.c,
             templates/c.unpack_tmpl.c,
 
-            templates/meta_assertions.tmpl.c,
-            templates/meta_c_tmpl.c,
-            templates/meta_h_tmpl.h,
-            templates/c_tmpl.c,
-            templates/h_tmpl.h,
-            templates/Makefile.tmpl
+            templates/*.c,
+            templates/*.h,
+            templates/*.tmpl
 
 library
   hs-source-dirs:      src
@@ -57,10 +48,13 @@ library
                        containers,
                        directory,
                        text >= 1.2.0.4,
+
                        -- something changed between 0.6.0 and 0.6.1 that
                        -- causes something to emit the following error:
                        --   Data.Text.Lazy.Text.toConstr
-                       -- TODO: Figure out what changed, fix it, move to 0.6.1.
+                       --
+                       -- Issue reported at:
+                       --   GitHub issue: https://github.com/lymar/hastache/issues/45
                        hastache == 0.6.0
   -- TODO: Move these modules to Cauterize.C11Sync.*
   exposed-modules:     Cauterize.C11Files,
