@@ -34,10 +34,18 @@ data-files: templates/c.init/*.c,
             templates/c.packed_size_tmpl.c,
             templates/c.unpack/*.c,
             templates/c.unpack_tmpl.c,
-
-            templates/*.c,
-            templates/*.h,
-            templates/*.tmpl
+            templates/c.init_tmpl.c,
+            templates/c.order_tmpl.c,
+            templates/c.pack_tmpl.c,
+            templates/c.packed_size_tmpl.c,
+            templates/c.unpack_tmpl.c,
+            templates/c_tmpl.c,
+            templates/h_tmpl.h,
+            templates/Makefile.tmpl,
+            templates/meta_assertions.tmpl.c,
+            templates/meta_c_tmpl.c,
+            templates/meta_h_tmpl.h,
+            templates/test_client.tmpl.c
 
 library
   hs-source-dirs:      src
