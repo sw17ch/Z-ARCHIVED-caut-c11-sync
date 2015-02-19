@@ -99,9 +99,9 @@ mkCTypeDetails nameToDecl' t =
         _ -> CBuiltIn { ctdDecl = builtInToStdType b, needTypeDef = True }
     Sp.Synonym { Sp.unSynonym = Sp.TSynonym { Sp.synonymRepr = r } } ->
       CSynonym { ctdDecl = d, ctdReprName = pack . show $ r, ctdReprDecl = builtInToStdType r }
-    Sp.Array { Sp.unFixed = Sp.TArray { Sp.arrayRef = r, Sp.arrayLen = l } } ->
+    Sp.Array { Sp.unArray = Sp.TArray { Sp.arrayRef = r, Sp.arrayLen = l } } ->
       CArray { ctdDecl = d, ctdReprName = pack r, ctdReprDecl = nameToDecl r , ctdArrayLen = l }
-    Sp.Vector { Sp.unBounded = Sp.TVector { Sp.vectorRef = r, Sp.vectorMaxLen = l } , Sp.lenRepr = Sp.LengthRepr lr } ->
+    Sp.Vector { Sp.unVector = Sp.TVector { Sp.vectorRef = r, Sp.vectorMaxLen = l } , Sp.lenRepr = Sp.LengthRepr lr } ->
       CVector { ctdDecl = d
               , ctdReprName = pack r
               , ctdReprDecl = nameToDecl r
