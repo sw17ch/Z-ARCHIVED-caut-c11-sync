@@ -1,68 +1,69 @@
 {{#specInfo}}
 {{#metaInfo}}
 #include "{{cLibName}}_meta.h"
-#include "socket99.h"
 
 #include <unistd.h>
 #include <string.h>
+#include <stdio.h>
 
-bool read_exactly(int fd, void * buf, size_t nbyte, size_t * rbyte);
-int run_client(int sock);
+bool read_exactly(FILE * fd, void * buf, size_t nbyte, size_t * rbyte);
+int run_client(FILE * si, FILE * so);
 
 int main(int argc, char * argv[]) {
-  if (argc < 3) {
-    printf("Usage: %s [server] [port]\n", argv[0]);
-    return -10;
-  }
+  (void)argc;
+  (void)argv;
 
-  socket99_config cfg = {
-    .host = argv[1],
-    .port = atoi(argv[2]),
-  };
-
-  socket99_result res;
-
-  if (socket99_open(&cfg, &res)) {
-    int r = run_client(res.fd);
-    close(res.fd);
-    return r;
-  } else {
-    printf("Unable to open socket. (%d)\n", res.status);
-    return 1;
-  }
+  return run_client(stdin, stdout);
 }
 
-int run_client(int sock) {
+int run_client(FILE * si, FILE * so) {
   struct {{cLibName}}_meta_header * h = malloc(sizeof(*h));
   struct {{cLibName}}_meta * d = malloc(sizeof(*d));
-  void * buffer = malloc(MAX_SIZE_{{cLibName}});
+  void * buffer = malloc(MESSAGE_MAX_SIZE_{{cLibName}}_meta);
 
   struct caut_unpack_iter upack;
   struct caut_pack_iter pack;
 
-  write(sock, SCHEMA_HASH_{{cLibName}}, sizeof(SCHEMA_HASH_{{cLibName}}));
-
   size_t rlen = 0;
 
+  enum caut_status status;
+
   /* Read and decode header. */
-  if (!read_exactly(sock, buffer, MESSAGE_OVERHEAD_{{cLibName}}_meta, &rlen)) { return -1; }
+  if (!read_exactly(si, buffer, MESSAGE_OVERHEAD_{{cLibName}}_meta, &rlen)) {
+    fprintf(stderr, "Not enough data available for header: expected %d bytes but only got %d bytes.",
+      MESSAGE_OVERHEAD_{{cLibName}}_meta,
+      rlen);
+    return 1;
+  }
   caut_unpack_iter_init(&upack, buffer, rlen);
-  if (caut_status_ok != unpack_header_{{cLibName}}_meta(&upack, h)) { return -2; }
+  if (caut_status_ok != (status = unpack_header_{{cLibName}}_meta(&upack, h))) {
+    fprintf(stderr, "Failed to unpack the header: %d.", status);
+    return 2;
+  }
 
   /* Read the remaining data as described by the header. */
-  if (!read_exactly(sock, buffer, h->length, &rlen)) { return -3; }
+  if (!read_exactly(si, buffer, h->length, &rlen)) {
+    fprintf(stderr, "Not enough data available: expected %d bytes but only got %d bytes.",
+      h->length,
+      rlen);
+    return 3;
+  }
   caut_unpack_iter_init(&upack, buffer, rlen);
-  if (caut_status_ok != unpack_{{cLibName}}_meta(&upack, h, d)) { return -4; }
+  if (caut_status_ok != (status = unpack_{{cLibName}}_meta(&upack, h, d))) {
+    fprintf(stderr, "Unable to unpack payload: %d.", status);
+    return 4;
+  }
 
   memset(buffer, 0, MAX_SIZE_{{cLibName}});
 
-  caut_pack_iter_init(&pack, buffer, MAX_SIZE_{{cLibName}});
+  caut_pack_iter_init(&pack, buffer, MESSAGE_MAX_SIZE_{{cLibName}}_meta);
 
-  if (caut_status_ok != pack_{{cLibName}}_meta(&pack, d)) { return -5; }
+  if (caut_status_ok != (status = pack_{{cLibName}}_meta(&pack, d))) {
+    fprintf(stderr, "Unable to pack response: %d.", status);
+    return 5;
+  }
 
-  write(sock, buffer, pack.position);
-
-  printf("OK.\n");
+  fwrite(buffer, 1, pack.position, so);
 
   return 0;
 }
@@ -82,11 +83,14 @@ int run_client(int sock) {
  *    Returns true when no errors occurred and the proper number of bytes was
  *    read. Returns false otherwise.
  */
-bool read_exactly(int fd, void * buf, size_t nbyte, size_t * rbyte) {
+bool read_exactly(FILE * fd, void * buf, size_t nbyte, size_t * rbyte) {
+  uint8_t * bbuf = buf;
   size_t r = 0;
 
   while(r < nbyte) {
-    int l = read(fd, buf, nbyte - r);
+    uint8_t * next_pos = &(bbuf[r]);
+    int l = fread(next_pos, 1, nbyte - r, fd);
+
     if (l <= 0) {
       break;
     } else {
