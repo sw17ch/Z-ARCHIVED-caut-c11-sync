@@ -10,7 +10,7 @@ HFILES := cauterize.h {{cLibName}}.h {{cLibName}}_meta.h
 
 all: $(TEST_PROG) $(CLIENT_PROG)
 clean:
-	rm $(PROG)
+	rm $(TEST_PROG) $(CLIENT_PROG)
 
 $(TEST_PROG): $(HFILES) $(CFILES) greatest.h assertions.c
 	$(CC) $(CFLAGS) $(CFILES) assertions.c -o $@
