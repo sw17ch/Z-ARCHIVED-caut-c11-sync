@@ -30,7 +30,7 @@ int run_client(FILE * si, FILE * so) {
 
   /* Read and decode header. */
   if (!read_exactly(si, buffer, MESSAGE_OVERHEAD_{{cLibName}}_meta, &rlen)) {
-    fprintf(stderr, "Not enough data available for header: expected %d bytes but only got %d bytes.",
+    fprintf(stderr, "Not enough data available for header: expected %d bytes but only got %lu bytes.",
       MESSAGE_OVERHEAD_{{cLibName}}_meta,
       rlen);
     return 1;
@@ -43,7 +43,7 @@ int run_client(FILE * si, FILE * so) {
 
   /* Read the remaining data as described by the header. */
   if (!read_exactly(si, buffer, h->length, &rlen)) {
-    fprintf(stderr, "Not enough data available: expected %d bytes but only got %d bytes.",
+    fprintf(stderr, "Not enough data available: expected %d bytes but only got %lu bytes.",
       h->length,
       rlen);
     return 3;
