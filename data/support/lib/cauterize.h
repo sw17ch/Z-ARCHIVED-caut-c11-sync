@@ -51,7 +51,7 @@ typedef bool caut_bool;
   ((A) < (B) ? caut_ord_lt : ((A) > (B) ? caut_ord_gt : caut_ord_eq))
 
 #define FLAG_SET(OBJ,IDX) \
-  (!!((OBJ)->_flags & (1 << (IDX))))
+  (!!((OBJ)->_flags & (1ull << (IDX))))
 
 struct caut_pack_iter {
   uint8_t * buffer;

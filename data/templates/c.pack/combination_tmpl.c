@@ -4,7 +4,7 @@ enum caut_status pack_{{ctName}}(struct caut_pack_iter * const _c_iter, struct {
 
 {{#ctdFields}}
 {{#CNamedRef}}
-  if (_c_obj->_flags & (1 << {{cnrIndex}})) {
+  if (_c_obj->_flags & (1ull << {{cnrIndex}})) {
     STATUS_CHECK(pack_{{cnrRefName}}(_c_iter, &_c_obj->{{cnrName}}));
   }
 {{/CNamedRef}}

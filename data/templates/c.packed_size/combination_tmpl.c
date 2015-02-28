@@ -4,12 +4,12 @@ size_t packed_size_{{ctName}}(struct {{ctName}} const * const _c_obj) {
 
 {{#ctdFields}}
 {{#CNamedRef}}
-  if (_c_obj->_flags & (1 << {{cnrIndex}})) {
+  if (_c_obj->_flags & (1ull << {{cnrIndex}})) {
     _c_size += packed_size_{{cnrRefName}}(&_c_obj->{{cnrName}});
   }
 {{/CNamedRef}}
 {{#CNamedEmpty}}
-  if (_c_obj->_flags & (1 << {{cneIndex}})) {
+  if (_c_obj->_flags & (1ull << {{cneIndex}})) {
     /* No data for field `{{cneName}}`. */
   }
 {{/CNamedEmpty}}
