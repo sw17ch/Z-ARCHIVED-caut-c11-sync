@@ -20,10 +20,10 @@ import Numeric
 
 -- TODO: This isn't necessary any more. Library names have a stricter parsing rule.
 libName :: Sp.Spec -> Text
-libName s = "lib" `append` replace " " "_" (pack $ Sp.specName s)
+libName s = "lib" `append` replace " " "_" (Sp.specName s)
 
 libVersion :: Sp.Spec -> Text
-libVersion = pack . Sp.specVersion
+libVersion = Sp.specVersion
 
 libHashToText :: FormHash -> Text
 libHashToText h = let bs = hashToBytes h

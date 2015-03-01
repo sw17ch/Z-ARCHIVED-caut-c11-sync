@@ -32,4 +32,4 @@ data CMetaType = CMetaType
 
 mkCMetaType :: M.MetaType -> CMetaType
 mkCMetaType M.MetaType { M.metaTypeName = n, M.metaTypePrefix = p } =
-  CMetaType { cMetaTypeName = pack n, cMetaPrefix = bytesToCSV p }
+  CMetaType { cMetaTypeName = n, cMetaPrefix = bytesToCSV p }

@@ -90,7 +90,7 @@ mkCType nameToDecl t =
  - code.
  -}
 mkCTypeDetails :: (Text -> Text) -> Sp.SpType -> CTypeDetails
-mkCTypeDetails nameToDecl' t =
+mkCTypeDetails nameToDecl t =
   case t of
     Sp.BuiltIn { Sp.unBuiltIn = Sp.TBuiltIn { Sp.unTBuiltIn = b } } ->
       -- This is a glorious hack to work around `bool` being a meaningful phrase in C
@@ -100,10 +100,10 @@ mkCTypeDetails nameToDecl' t =
     Sp.Synonym { Sp.unSynonym = Sp.TSynonym { Sp.synonymRepr = r } } ->
       CSynonym { ctdDecl = d, ctdReprName = pack . show $ r, ctdReprDecl = builtInToStdType r }
     Sp.Array { Sp.unArray = Sp.TArray { Sp.arrayRef = r, Sp.arrayLen = l } } ->
-      CArray { ctdDecl = d, ctdReprName = pack r, ctdReprDecl = nameToDecl r , ctdArrayLen = l }
+      CArray { ctdDecl = d, ctdReprName = r, ctdReprDecl = nameToDecl r , ctdArrayLen = l }
     Sp.Vector { Sp.unVector = Sp.TVector { Sp.vectorRef = r, Sp.vectorMaxLen = l } , Sp.lenRepr = Sp.LengthRepr lr } ->
       CVector { ctdDecl = d
-              , ctdReprName = pack r
+              , ctdReprName = r
               , ctdReprDecl = nameToDecl r
               , ctdVectorMaxLen = l
               , ctdVectorMaxLenReprName = pack . show $ lr
@@ -128,9 +128,8 @@ mkCTypeDetails nameToDecl' t =
                 , ctdHasData = hasData fs'
                 }
   where
-    mkNamedRef' = mkNamedRef nameToDecl'
+    mkNamedRef' = mkNamedRef nameToDecl
     d = mkDecl t
-    nameToDecl = nameToDecl' . pack
 
 hasData :: [CNamedField] -> Bool
 hasData [] = False
@@ -139,12 +138,12 @@ hasData (CNamedRef {}:_) = True
 
 mkNamedRef :: (Text -> Text) -> Sp.Field -> CNamedField
 mkNamedRef nameToDecl Sp.Field { Sp.fName = n, Sp.fRef = r, Sp.fIndex = i } =
-  CNamedRef { cnrName = pack n
-            , cnrRefName = pack r
-            , cnrRefDecl = nameToDecl . pack $ r
+  CNamedRef { cnrName = n
+            , cnrRefName = r
+            , cnrRefDecl = nameToDecl r
             , cnrIndex = i }
 mkNamedRef _ Sp.EmptyField { Sp.fName = n, Sp.fIndex = i } =
-  CNamedEmpty { cneName = pack n, cneIndex = i }
+  CNamedEmpty { cneName = n, cneIndex = i }
 
 mkDecl :: Sp.SpType -> Text
 mkDecl t@(Sp.Array {}) = typeAsStruct t
@@ -156,7 +155,7 @@ mkDecl t@(Sp.BuiltIn {}) = typeToName t
 mkDecl t@(Sp.Synonym {}) = typeToName t
 
 typeToName :: Sp.SpType -> Text
-typeToName t = pack $ Sp.typeName t
+typeToName = Sp.typeName
 
 typeAsStruct :: Sp.SpType -> Text
 typeAsStruct t = "struct " `append` typeToName t
