@@ -16,6 +16,6 @@ $(TEST_PROG): $(HFILES) $(CFILES) greatest.h assertions.c
 	$(CC) $(CFLAGS) $(CFILES) assertions.c -o $@
 
 $(CLIENT_PROG): $(HFILES) $(CFILES)
-	$(CC) $(CFLAGS) $(CFILES) socket99.c test_client.c -o $@
+	$(CC) $(CFLAGS) $(CFILES) test_client.c -o $@
 {{/metaInfo}}
 {{/specInfo}}
