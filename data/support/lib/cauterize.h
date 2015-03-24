@@ -87,10 +87,6 @@ enum caut_status __caut_pack_u16(struct caut_pack_iter * const iter, uint16_t co
 enum caut_status __caut_pack_u32(struct caut_pack_iter * const iter, uint32_t const * const obj);
 enum caut_status __caut_pack_u64(struct caut_pack_iter * const iter, uint64_t const * const obj);
 
-enum caut_status __caut_pack_cu8(struct caut_pack_iter * const iter, uint8_t const * const obj);
-enum caut_status __caut_pack_cu16(struct caut_pack_iter * const iter, uint16_t const * const obj);
-enum caut_status __caut_pack_cu32(struct caut_pack_iter * const iter, uint32_t const * const obj);
-
 enum caut_status __caut_pack_f32(struct caut_pack_iter * const iter, float const * const obj);
 enum caut_status __caut_pack_f64(struct caut_pack_iter * const iter, double const * const obj);
 
@@ -110,10 +106,6 @@ enum caut_status __caut_unpack_u8(struct caut_unpack_iter * const iter, uint8_t 
 enum caut_status __caut_unpack_u16(struct caut_unpack_iter * const iter, uint16_t * const obj);
 enum caut_status __caut_unpack_u32(struct caut_unpack_iter * const iter, uint32_t * const obj);
 enum caut_status __caut_unpack_u64(struct caut_unpack_iter * const iter, uint64_t * const obj);
-
-enum caut_status __caut_unpack_cu8(struct caut_unpack_iter * const iter, uint8_t * const obj);
-enum caut_status __caut_unpack_cu16(struct caut_unpack_iter * const iter, uint16_t * const obj);
-enum caut_status __caut_unpack_cu32(struct caut_unpack_iter * const iter, uint32_t * const obj);
 
 enum caut_status __caut_unpack_f32(struct caut_unpack_iter * const iter, float * const obj);
 enum caut_status __caut_unpack_f64(struct caut_unpack_iter * const iter, double * const obj);

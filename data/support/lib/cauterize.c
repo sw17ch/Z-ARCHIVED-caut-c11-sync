@@ -122,10 +122,6 @@ GENERIC_PACK(u16, uint16_t)
 GENERIC_PACK(u32, uint32_t)
 GENERIC_PACK(u64, uint64_t)
 
-GENERIC_PACK(cu8,  uint8_t)
-GENERIC_PACK(cu16, uint16_t)
-GENERIC_PACK(cu32, uint32_t)
-
 GENERIC_PACK(f32, float)
 GENERIC_PACK(f64, double)
 
@@ -145,10 +141,6 @@ GENERIC_UNPACK(u8,  uint8_t)
 GENERIC_UNPACK(u16, uint16_t)
 GENERIC_UNPACK(u32, uint32_t)
 GENERIC_UNPACK(u64, uint64_t)
-
-GENERIC_UNPACK(cu8,  uint8_t)
-GENERIC_UNPACK(cu16, uint16_t)
-GENERIC_UNPACK(cu32, uint32_t)
 
 GENERIC_UNPACK(f32, float)
 GENERIC_UNPACK(f64, double)

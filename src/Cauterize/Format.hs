@@ -54,9 +54,6 @@ builtInToStdType Sp.BIs64      = "int64_t"
 builtInToStdType Sp.BIf32      = "float"
 builtInToStdType Sp.BIf64      = "double"
 builtInToStdType Sp.BIbool     = "bool"
-builtInToStdType Sp.BIcu8      = "uint8_t"
-builtInToStdType Sp.BIcu16     = "uint16_t"
-builtInToStdType Sp.BIcu32     = "uint32_t"
 
 unsignedAsLengthInBytes :: Integer -> Text
 unsignedAsLengthInBytes 1 = "uint8_t"
