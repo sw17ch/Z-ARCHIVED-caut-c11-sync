@@ -5,10 +5,10 @@
 
 ./.cabal-sandbox/bin/cauterize-test \
   crucible --build-cmd="../../.cabal-sandbox/bin/caut-c11-sync-gen --spec=%s --output=c11" \
-           --build-cmd="../../.cabal-sandbox/bin/caut-c11-sync-gen-meta --spec=%s --meta=%m --output=c11" \
+           --build-cmd="../../.cabal-sandbox/bin/caut-c11-sync-gen-meta --spec=%s --output=c11" \
            --build-cmd="make -C c11" \
            --run-cmd="./c11/test_client" \
-           --schema-count=1 \
-           --instance-count=1000 \
+           --schema-count=10 \
+           --instance-count=100 \
            --type-count=20 \
            --enc-size=1024

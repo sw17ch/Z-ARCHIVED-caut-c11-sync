@@ -4,7 +4,6 @@ module Main (main) where
 import Options.Applicative
 
 import qualified Cauterize.Specification as Sp
-import qualified Cauterize.Meta as M
 
 import Cauterize.FileNames
 import Cauterize.C11Files
@@ -18,7 +17,6 @@ import Paths_caut_c11_sync
 
 data Caut2C11Opts = Caut2C11Opts
   { specFile :: String
-  , metaFile :: String
   , outputDirectory :: String
   } deriving (Show)
 
@@ -28,11 +26,6 @@ optParser = Caut2C11Opts
     ( long "spec"
    <> metavar "SPEC_PATH"
    <> help "Cauterize specification file."
-    )
-  <*> strOption
-    ( long "meta"
-   <> metavar "META_PATH"
-   <> help "Meta interface specification file."
     )
   <*> strOption
     ( long "output"
@@ -55,9 +48,8 @@ main = runWithOptions caut2c11
 caut2c11 :: Caut2C11Opts -> IO ()
 caut2c11 opts = createGuard out $ do
   s <- loadSpec
-  a <- loadMeta
 
-  render s a out
+  render s out
   where
     out = outputDirectory opts
 
@@ -68,24 +60,17 @@ caut2c11 opts = createGuard out $ do
         Left e -> error $ show e
         Right s' -> return s'
 
-    loadMeta = do
-      let inFile = metaFile opts
-      do p <- M.parseFile inFile
-         case p of
-           Left e -> error $ show e
-           Right a' -> return a'
-
-render :: Sp.Spec -> M.Meta -> String -> IO ()
-render spec meta path = do
+render :: Sp.Spec -> String -> IO ()
+render spec path = do
   renderFiles
   copyFiles
   where
     renderFiles = do
-      renderMetaHFile spec meta >>= T.writeFile (path `combine` metaHFileName spec)
-      renderMetaCFile spec meta >>= T.writeFile (path `combine` metaCFileName spec)
-      renderAssertions spec meta >>= T.writeFile (path `combine` assertionsFileName)
-      renderTestClient spec meta >>= T.writeFile (path `combine` testClientName)
-      renderMakefile spec meta >>= T.writeFile (path `combine` makefileName)
+      renderMetaHFile spec >>= T.writeFile (path `combine` metaHFileName spec)
+      renderMetaCFile spec >>= T.writeFile (path `combine` metaCFileName spec)
+      renderAssertions spec >>= T.writeFile (path `combine` assertionsFileName)
+      renderTestClient spec >>= T.writeFile (path `combine` testClientName)
+      renderMakefile spec >>= T.writeFile (path `combine` makefileName)
     copyFiles = do
       greatest_dot_h <- getDataFileName "support/greatest.h"
       copyFile greatest_dot_h (path `combine` "greatest.h")

@@ -15,7 +15,6 @@ import Text.Hastache
 import Text.Hastache.Context
 
 import qualified Cauterize.Specification as Sp
-import qualified Cauterize.Meta as M
 import Cauterize.CSpec
 import Cauterize.CMeta
 
@@ -39,20 +38,20 @@ renderHFile s = renderFile (mkCSpec s) "templates/h_tmpl.h"
 renderCFile :: Sp.Spec -> IO Text
 renderCFile s = renderFile (mkCSpec s) "templates/c_tmpl.c"
 
-renderMetaHFile :: Sp.Spec -> M.Meta -> IO Text
-renderMetaHFile s a = renderMetaFile (mkCSpec s) (mkCMeta a) "templates/meta_h_tmpl.h"
+renderMetaHFile :: Sp.Spec -> IO Text
+renderMetaHFile s = renderMetaFile (mkCSpec s) (mkCMeta s) "templates/meta_h_tmpl.h"
 
-renderMetaCFile :: Sp.Spec -> M.Meta -> IO Text
-renderMetaCFile s a = renderMetaFile (mkCSpec s) (mkCMeta a) "templates/meta_c_tmpl.c"
+renderMetaCFile :: Sp.Spec -> IO Text
+renderMetaCFile s = renderMetaFile (mkCSpec s) (mkCMeta s) "templates/meta_c_tmpl.c"
 
-renderAssertions :: Sp.Spec -> M.Meta -> IO Text
-renderAssertions s a = renderMetaFile (mkCSpec s) (mkCMeta a) "templates/meta_assertions.tmpl.c"
+renderAssertions :: Sp.Spec -> IO Text
+renderAssertions s = renderMetaFile (mkCSpec s) (mkCMeta s) "templates/meta_assertions.tmpl.c"
 
-renderTestClient :: Sp.Spec -> M.Meta -> IO Text
-renderTestClient s a = renderMetaFile (mkCSpec s) (mkCMeta a) "templates/test_client.tmpl.c"
+renderTestClient :: Sp.Spec -> IO Text
+renderTestClient s = renderMetaFile (mkCSpec s) (mkCMeta s) "templates/test_client.tmpl.c"
 
-renderMakefile :: Sp.Spec -> M.Meta -> IO Text
-renderMakefile s a = renderMetaFile (mkCSpec s) (mkCMeta a) "templates/Makefile.tmpl"
+renderMakefile :: Sp.Spec -> IO Text
+renderMakefile s = renderMetaFile (mkCSpec s) (mkCMeta s) "templates/Makefile.tmpl"
 
 renderMetaFile :: CSpec -> CMeta -> String -> IO Text
 renderMetaFile s a p = do
